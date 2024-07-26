@@ -1,4 +1,5 @@
 import { observer } from "mobx-react-lite";
+import store from "../store/store";
 import { useEffect, useState } from "react";
 import { Image } from "antd";
 
@@ -43,7 +44,9 @@ const CardEvent = observer(({ data }: any) => {
   };
 
   const sortByDate = () => {
-    console.log(new Date(data.attributes.date_to).getDay());
+    console.log(new Date(data.attributes.date_to).getDate());
+    store.dataFilter = new Date(data.attributes.date_to).getDate();
+    store.setDataFilter();
     // let now = new Date();
     // console.log(now.getDate(), now.getMonth() + 1, now.getDay());
   };
@@ -51,6 +54,16 @@ const CardEvent = observer(({ data }: any) => {
   const sortByGeom = () => {
     console.log(data.attributes.geom_lat);
     console.log(data.attributes.geom_long);
+  };
+
+  const removeEvent = () => {
+    console.log("Скрыть. Не интересно...");
+    console.log("Remove!", data.objectId);
+    let removedEvents =
+      JSON.parse(localStorage.getItem("removedEvents") || "[]") || [];
+    removedEvents.push(data.objectId);
+    localStorage.setItem("removedEvents", JSON.stringify(removedEvents));
+    store.checkRemovedEvents();
   };
 
   useEffect(() => {
@@ -63,20 +76,17 @@ const CardEvent = observer(({ data }: any) => {
         className="p-6 max-w-[400px] mx-auto bg-white rounded-xl shadow-lg"
         // onClick={() => getFullCard()}
       >
-        <div
-          className="relative cursor-pointer"
-          onClick={() => console.log("Скрыть. Не интересно...")}
-        >
+        <div className="relative cursor-pointer" onClick={() => removeEvent()}>
           <svg
             className="absolute top-0 right-0"
-            width="12"
-            height="12"
+            width="18"
+            height="18"
             viewBox="0 0 18 18"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M1 1L17 17" stroke="#ADADAD" stroke-width="2" />
-            <path d="M17 1L1 17" stroke="#ADADAD" stroke-width="2" />
+            <path d="M1 1L17 17" stroke="#ADADAD" strokeWidth="2" />
+            <path d="M17 1L1 17" stroke="#ADADAD" strokeWidth="2" />
           </svg>
         </div>
 
@@ -137,7 +147,7 @@ const CardEvent = observer(({ data }: any) => {
             <path
               d="M14.5 1.23607L17.0289 9.01925C17.2967 9.8433 18.0646 10.4012 18.931 10.4012H27.1147L20.494 15.2115C19.793 15.7208 19.4997 16.6235 19.7674 17.4476L22.2963 25.2307L15.6756 20.4205C14.9746 19.9112 14.0254 19.9112 13.3244 20.4205L6.70366 25.2307L9.23257 17.4476C9.50031 16.6235 9.207 15.7208 8.50603 15.2115L7.91824 16.0205L8.50602 15.2115L1.88525 10.4012L10.069 10.4012C10.9354 10.4012 11.7033 9.8433 11.9711 9.01925L14.5 1.23607Z"
               stroke="#3399FF"
-              stroke-width="2"
+              strokeWidth="2"
             />
           </svg>
         </div>
