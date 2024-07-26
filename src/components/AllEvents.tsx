@@ -25,11 +25,11 @@ const AllEvents = observer(() => {
 
   return (
     <>
-      <div>
+      {/* <div>
         <h1>Все события</h1>
-      </div>
+      </div> */}
 
-      <div className="grid sm:grid-cols-3 grid-cols-1 gap-4 pt-4">
+      <div className="grid items-start sm:grid-cols-3 grid-cols-1 2xl:grid-cols-4 gap-4 pt-48">
         {events &&
           events.map((item: { objectId: number }) => {
             return <CardEvent data={item} key={item.objectId} />;

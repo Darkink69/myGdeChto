@@ -6,7 +6,9 @@ function App() {
   return (
     <>
       <Header />
-      <AllEvents />
+      <div className="container mx-auto">
+        <AllEvents />
+      </div>
     </>
   );
 }
