@@ -1,9 +1,9 @@
 import { makeAutoObservable } from "mobx";
 
 class Store {
-  // jsonData = {};
-  // isLoaded = false;
+  allEvents = 0;
   removedEvents = [];
+  favoriteEvents: any = [];
   dataFilter: any;
 
   constructor() {
@@ -21,9 +21,15 @@ class Store {
   //     });
   // }
 
-  checkRemovedEvents() {
+  setAllEvents(events: number) {
+    this.allEvents = events;
+  }
+
+  checkEvents() {
     this.removedEvents =
       JSON.parse(localStorage.getItem("removedEvents") || "[]") || [];
+    this.favoriteEvents =
+      JSON.parse(localStorage.getItem("favoriteEvents") || "[]") || [];
   }
 
   setDataFilter() {

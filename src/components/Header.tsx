@@ -1,6 +1,16 @@
 import { observer } from "mobx-react-lite";
+import { SetStateAction, useState } from "react";
 
 const Header = observer(() => {
+  const [value, setValue] = useState("");
+
+  const handleChange = (event: {
+    target: { value: SetStateAction<string> };
+  }) => {
+    setValue(event.target.value);
+    console.log(value);
+  };
+
   return (
     <div className="fixed bg-[url('../src/assets/header_bg.jpg')] z-10 h-[100px] w-full px-5 shadow-md">
       <div className="flex items-center sm:pl-44 pl-28">
@@ -77,9 +87,65 @@ const Header = observer(() => {
             </clipPath>
           </defs>
         </svg>
-        <p className="pl-8 font-sans font-bold text-3xl text-white">
+        <p className="pl-8 font-sans font-bold text-3xl text-white cursor-pointer">
           Новосибирск
         </p>
+
+        <form className="absolute mr-72 right-0">
+          <div className="flex items-center">
+            <input
+              className="border border-white bg-transparent text-white placeholder-white placeholder-opacity-50 rounded-md h-10 w-80 outline-none"
+              type="text"
+              value={value}
+              placeholder="  Поиск"
+              onChange={handleChange}
+            />
+
+            {/* <p>Value: {value}</p> */}
+
+            <span className="relative cursor-pointer">
+              <svg
+                className="absolute -top-3 right-4"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M23.2703 20.957L17.7213 15.4079C18.7953 13.7968 19.5113 11.8278 19.5113 9.85879C19.5113 4.48871 15.0362 0.00469233 9.66614 0.00469233C4.47507 -0.16536 0 4.30971 0 9.67979C0 15.0499 4.47507 19.5249 9.84515 19.5249C11.8142 19.5249 13.7832 18.9879 15.3942 17.7349L20.9433 23.284L21.6593 24L22.3753 23.284L23.2703 22.389L23.9864 21.673L23.2703 20.957ZM9.73775 16.3745C6.07714 16.3745 3.1057 13.403 3.1057 9.74244C3.1057 6.08183 6.07714 3.11039 9.73775 3.11039C13.3983 3.11039 16.3698 6.08183 16.3698 9.74244C16.3698 13.403 13.3983 16.3745 9.73775 16.3745Z"
+                  fill="white"
+                />
+              </svg>
+            </span>
+          </div>
+        </form>
+
+        {/* <div className="w-72">
+          <div className="relative w-full min-w-[200px] h-10">
+            <input
+              className="peer w-full h-full bg-transparent text-blue-gray-700 font-sans font-normal outline outline-0 focus:outline-0 disabled:bg-blue-gray-50 disabled:border-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 border focus:border-2 border-t-transparent focus:border-t-transparent text-sm px-3 py-2.5 rounded-[7px] border-blue-gray-200 focus:border-gray-900"
+              placeholder=" "
+            />
+            <label className="flex w-full h-full select-none pointer-events-none absolute left-0 font-normal !overflow-visible truncate peer-placeholder-shown:text-blue-gray-500 leading-tight peer-focus:leading-tight peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-blue-gray-500 transition-all -top-1.5 peer-placeholder-shown:text-sm text-[11px] peer-focus:text-[11px] before:content[' '] before:block before:box-border before:w-2.5 before:h-1.5 before:mt-[6.5px] before:mr-1 peer-placeholder-shown:before:border-transparent before:rounded-tl-md before:border-t peer-focus:before:border-t-2 before:border-l peer-focus:before:border-l-2 before:pointer-events-none before:transition-all peer-disabled:before:border-transparent after:content[' '] after:block after:flex-grow after:box-border after:w-2.5 after:h-1.5 after:mt-[6.5px] after:ml-1 peer-placeholder-shown:after:border-transparent after:rounded-tr-md after:border-t peer-focus:after:border-t-2 after:border-r peer-focus:after:border-r-2 after:pointer-events-none after:transition-all peer-disabled:after:border-transparent peer-placeholder-shown:leading-[3.75] text-gray-500 peer-focus:text-gray-900 before:border-blue-gray-200 peer-focus:before:!border-gray-900 after:border-blue-gray-200 peer-focus:after:!border-gray-900">
+              Username
+            </label>
+          </div>
+        </div> */}
+
+        <svg
+          className="absolute mr-44 right-0 cursor-pointer"
+          width="70"
+          height="70"
+          viewBox="0 0 70 70"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="35" cy="35" r="35" fill="#26A69A" />
+          <rect x="23" y="25" width="24" height="2.53333" fill="white" />
+          <rect x="23" y="32.5996" width="24" height="2.53333" fill="white" />
+          <rect x="23" y="41.4668" width="24" height="2.53333" fill="white" />
+        </svg>
       </div>
     </div>
   );
