@@ -1,10 +1,15 @@
 import { makeAutoObservable } from "mobx";
 
 class Store {
+  cities = ["novosibirsk", "tomsk", "chelyabinsk"];
+  titleCities = ["Новосибирск", "Томск", "Озерск"];
+  currentCity = JSON.parse(localStorage.getItem("currentCity") || "0") || 0;
   allEvents = 0;
   removedEvents = [];
   favoriteEvents: any = [];
-  dataFilter: any;
+  dataFilter = 0;
+  eventLat = 0.0;
+  eventLong = 0.0;
 
   constructor() {
     makeAutoObservable(this);
@@ -21,8 +26,18 @@ class Store {
   //     });
   // }
 
+  setCurentCity(currentCity: any) {
+    this.currentCity = currentCity;
+    localStorage.setItem("currentCity", this.currentCity);
+  }
+
   setAllEvents(events: number) {
     this.allEvents = events;
+  }
+
+  setCoordEvent(eventLat: any, eventLong: any) {
+    this.eventLat = eventLat;
+    this.eventLong = eventLong;
   }
 
   checkEvents() {
@@ -32,8 +47,8 @@ class Store {
       JSON.parse(localStorage.getItem("favoriteEvents") || "[]") || [];
   }
 
-  setDataFilter() {
-    console.log(this.dataFilter, "store!!");
+  setDataFilter(dataFilter: number) {
+    this.dataFilter = dataFilter;
   }
 }
 

@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { SetStateAction, useState } from "react";
+import store from "../store/store";
 
 const Header = observer(() => {
   const [value, setValue] = useState("");
@@ -11,10 +12,26 @@ const Header = observer(() => {
     console.log(value);
   };
 
+  const changeCity = () => {
+    console.log(store.cities.length);
+    store.setCurentCity(
+      store.currentCity < store.cities.length - 1 ? store.currentCity + 1 : 0
+    );
+    console.log(store.currentCity);
+  };
+
   return (
     <div className="fixed bg-[url('../src/assets/header_bg.jpg')] z-10 h-[100px] w-full px-5 shadow-md">
       <div className="flex items-center sm:pl-44 pl-28">
         <svg
+          className="cursor-pointer"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              left: 0,
+              behavior: "smooth",
+            })
+          }
           width="100"
           height="100"
           viewBox="0 0 100 100"
@@ -87,8 +104,11 @@ const Header = observer(() => {
             </clipPath>
           </defs>
         </svg>
-        <p className="pl-8 font-sans font-bold text-3xl text-white cursor-pointer">
-          Новосибирск
+        <p
+          className="pl-8 font-sans font-bold text-3xl text-white cursor-pointer"
+          onClick={() => changeCity()}
+        >
+          {store.titleCities[store.currentCity]}
         </p>
 
         <form className="absolute mr-72 right-0">

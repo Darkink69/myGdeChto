@@ -4,12 +4,17 @@ import CardEvent from "./CardEvent";
 import { useEffect, useState } from "react";
 
 const AllEvents = observer(() => {
+  const toleranceLat = 0.01;
+  const toleranceLong = 0.005;
   const [events, setEvents] = useState<any>(null);
   const [shownEvents, setshownEvents] = useState<any>(null);
+  // const [currentTab, setCurrentTab] = useState();
 
   const jsonFetch = () => {
     fetch(
-      "https://raw.githubusercontent.com/Darkink69/design_work/main/all_events_now.json"
+      `https://raw.githubusercontent.com/Darkink69/design_work/main/all_events_now_${
+        store.cities[store.currentCity]
+      }.json`
     )
       .then((response) => response.json())
       .then((data) => setEvents(data.results))
@@ -23,7 +28,6 @@ const AllEvents = observer(() => {
     let shownEvents: { objectId: string | Number | null }[] = [];
     events?.map((item: { objectId: string | Number | null }) => {
       if (!removedEvents.includes(item.objectId)) {
-        // console.log(item);
         shownEvents.push(item);
       }
     });
@@ -71,22 +75,52 @@ const AllEvents = observer(() => {
   };
 
   useEffect(() => {
+    // store.setCurentCity();
     jsonFetch();
     store.checkEvents();
     store.setAllEvents(shownEvents?.length);
-  }, []);
+  }, [store.currentCity]);
 
   useEffect(() => {
     sortEvents();
-    // store.allEvents = shownEvents?.length;
     store.setAllEvents(shownEvents?.length);
   }, [events, store.allEvents, store.removedEvents, store.dataFilter]);
+
+  useEffect(() => {
+    console.log(store.dataFilter);
+    let dateEvents: { objectId: string | Number | null }[] = [];
+    events?.map(
+      (item: { attributes: any; objectId: string | Number | null }) => {
+        if (store.dataFilter === new Date(item.attributes.date_to).getDate()) {
+          dateEvents.push(item);
+        }
+      }
+    );
+    setshownEvents(dateEvents);
+  }, [store.dataFilter]);
+
+  useEffect(() => {
+    console.log(store.eventLat);
+    console.log(store.eventLong);
+    let coordEvents: { objectId: string | Number | null }[] = [];
+    shownEvents?.map(
+      (item: { attributes: any; objectId: string | Number | null }) => {
+        if (
+          Math.abs(store.eventLat - item.attributes.geom_lat) < toleranceLat &&
+          Math.abs(store.eventLong - item.attributes.geom_long) < toleranceLong
+        ) {
+          coordEvents.push(item);
+        }
+      }
+    );
+    setshownEvents(coordEvents);
+  }, [store.eventLat, store.eventLong]);
 
   return (
     <>
       <div className="flex items-center pt-32 relative">
         <h1
-          className="pr-2 font-bold underline text-slate-600 cursor-pointer"
+          className="pr-2 cursor-pointer text-teal-500 font-bold underline"
           onClick={() => sortEvents()}
         >
           Все события

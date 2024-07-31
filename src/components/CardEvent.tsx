@@ -45,6 +45,7 @@ const CardEvent = observer(({ data }: any) => {
   };
 
   const getTooltip = () => {
+    console.log("Показать все события в этот день");
     setVisibleTooltip("");
     setTimeout(() => {
       setVisibleTooltip("hidden");
@@ -52,16 +53,15 @@ const CardEvent = observer(({ data }: any) => {
   };
 
   const sortByDate = () => {
-    console.log(new Date(data.attributes.date_to).getDate());
-    store.dataFilter = new Date(data.attributes.date_to).getDate();
-    store.setDataFilter();
-    // let now = new Date();
-    // console.log(now.getDate(), now.getMonth() + 1, now.getDay());
+    // store.dataFilter = new Date(data.attributes.date_to).getDate();
+    const dataFilter = new Date(data.attributes.date_to).getDate();
+    store.setDataFilter(dataFilter);
   };
 
   const sortByGeom = () => {
-    console.log(data.attributes.geom_lat);
-    console.log(data.attributes.geom_long);
+    const eventLat = data.attributes.geom_lat;
+    const eventLong = data.attributes.geom_long;
+    store.setCoordEvent(eventLat, eventLong);
   };
 
   const removeEvent = () => {
@@ -110,7 +110,7 @@ const CardEvent = observer(({ data }: any) => {
         <h1
           className="font-sans text-2xl font-bold text-sky-700 cursor-pointer pb-4"
           onClick={() => getFullCard()}
-          onMouseEnter={() => getTooltip()}
+          // onMouseEnter={() => getTooltip()}
         >
           {data.attributes.name}
         </h1>
@@ -127,15 +127,17 @@ const CardEvent = observer(({ data }: any) => {
         <span
           className={dateEl}
           onClick={() => sortByDate()}
-          onMouseEnter={() => console.log("Показать все события в этот день")}
+          // onMouseEnter={() => getTooltip()}
         >
           <span className="relative leading-normal p-2">{dateText}</span>
         </span>
+
         <p className="text-base pt-1">{data.attributes.text_time}</p>
         {/* <p>{data.objectId}</p> */}
+        {/* <p>{data.attributes.approve}</p> */}
 
         <Image
-          className="pt-4 pb-4 w-full rounded-xl"
+          className="pt-4 pb-4 w-full"
           // width={200}
           src={data.attributes.img}
         />
