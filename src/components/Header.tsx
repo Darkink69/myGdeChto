@@ -8,8 +8,11 @@ const Header = observer(() => {
   const handleChange = (event: {
     target: { value: SetStateAction<string> };
   }) => {
+    setTimeout(() => {
+      store.setRequest(value);
+    }, 2000);
     setValue(event.target.value);
-    console.log(value);
+    // console.log(value);
   };
 
   const changeCity = () => {

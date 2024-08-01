@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 const AllEvents = observer(() => {
   const toleranceLat = 0.01;
   const toleranceLong = 0.005;
+  const underlineTabStyle =
+    " underline decoration-4 underline-offset-8 decoration-sky-500";
   const [events, setEvents] = useState<any>(null);
   const [shownEvents, setshownEvents] = useState<any>(null);
-  // const [currentTab, setCurrentTab] = useState();
+  const [currentTab, setCurrentTab] = useState(0);
 
   const jsonFetch = () => {
     fetch(
@@ -26,20 +28,22 @@ const AllEvents = observer(() => {
       JSON.parse(localStorage.getItem("removedEvents") || "[]") || [];
 
     let shownEvents: { objectId: string | Number | null }[] = [];
-    events?.map((item: { objectId: string | Number | null }) => {
-      if (!removedEvents.includes(item.objectId)) {
-        shownEvents.push(item);
+    events?.map(
+      (item: { attributes: any; objectId: string | Number | null }) => {
+        if (
+          !removedEvents.includes(item.objectId) &&
+          new Date().getTime() - 86400000 <
+            new Date(item.attributes.date_to).getTime()
+        ) {
+          shownEvents.push(item);
+        }
       }
-    });
+    );
     setshownEvents(shownEvents);
+    setCurrentTab(0);
   };
 
   const sortFavorites = () => {
-    // console.log("ИЗбранные!!");
-    // let favoriteEvents =
-    //   JSON.parse(localStorage.getItem("favoriteEvents") || "[]") || [];
-    // console.log(store.favoriteEvents);
-
     let shownEvents: { objectId: string | Number | null }[] = [];
     events?.map((item: { objectId: string | Number | null }) => {
       if (store.favoriteEvents.includes(item.objectId)) {
@@ -48,6 +52,7 @@ const AllEvents = observer(() => {
       }
     });
     setshownEvents(shownEvents);
+    setCurrentTab(2);
   };
 
   const shuffleEvents = () => {
@@ -72,13 +77,14 @@ const AllEvents = observer(() => {
     });
 
     setshownEvents(soonEvents);
+    setCurrentTab(1);
   };
 
   useEffect(() => {
-    // store.setCurentCity();
     jsonFetch();
     store.checkEvents();
     store.setAllEvents(shownEvents?.length);
+    document.title = `ЧёКаво. ${store.titleCities[store.currentCity]}`;
   }, [store.currentCity]);
 
   useEffect(() => {
@@ -120,7 +126,12 @@ const AllEvents = observer(() => {
     <>
       <div className="flex items-center pt-32 relative">
         <h1
-          className="pr-2 cursor-pointer text-teal-500 font-bold underline"
+          className={
+            currentTab == 0
+              ? underlineTabStyle +
+                " pr-2 cursor-pointer text-slate-600 font-bold "
+              : " pr-2 cursor-pointer text-slate-600 font-bold"
+          }
           onClick={() => sortEvents()}
         >
           Все события
@@ -132,7 +143,12 @@ const AllEvents = observer(() => {
           {store.allEvents}
         </span>
         <p
-          className="pl-8 pr-8 font-bold text-sky-400 cursor-pointer"
+          className={
+            currentTab == 1
+              ? underlineTabStyle +
+                " pl-8 pr-8 font-bold text-sky-400 cursor-pointer"
+              : " pl-8 pr-8 font-bold text-sky-400 cursor-pointer"
+          }
           onClick={() => sortSoonEvents()}
         >
           Скоро!
@@ -146,7 +162,12 @@ const AllEvents = observer(() => {
         </p>
 
         <p
-          className="pr-2 font-bold text-slate-600 cursor-pointer"
+          className={
+            currentTab == 2
+              ? underlineTabStyle +
+                " pr-2 font-bold text-slate-600 cursor-pointer"
+              : " pr-2 font-bold text-slate-600 cursor-pointer"
+          }
           onClick={() => sortFavorites()}
         >
           Избранные
@@ -160,13 +181,9 @@ const AllEvents = observer(() => {
             {store.favoriteEvents.length}
           </span>
         )}
-        <p className="pl-4 pr-4 font-bold text-slate-600 cursor-pointer">
-          На карте
-        </p>
+        <p className="pl-4 pr-4 font-bold text-slate-600">На карте</p>
 
-        <p className="pr-4 font-bold text-slate-600 cursor-pointer">
-          Прошедшие
-        </p>
+        <p className="pr-4 font-bold text-slate-600">Прошедшие</p>
         <button className="bg-teal-600 hover:bg-sky-700 font-bold text-white h-10 w-48 rounded-md absolute right-0">
           Добавить событие
         </button>

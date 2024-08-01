@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
 
 class Store {
-  cities = ["novosibirsk", "tomsk", "chelyabinsk"];
-  titleCities = ["Новосибирск", "Томск", "Озерск"];
+  cities = ["novosibirsk", "moscow", "tomsk", "chelyabinsk"];
+  titleCities = ["Новосибирск", "Москва", "Томск", "Озерск"];
   currentCity = JSON.parse(localStorage.getItem("currentCity") || "0") || 0;
   allEvents = 0;
   removedEvents = [];
@@ -38,6 +38,12 @@ class Store {
   setCoordEvent(eventLat: any, eventLong: any) {
     this.eventLat = eventLat;
     this.eventLong = eventLong;
+  }
+
+  setRequest(value: string) {
+    setTimeout(() => {
+      console.log(value, "store!");
+    }, 2000);
   }
 
   checkEvents() {
