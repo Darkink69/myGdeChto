@@ -8,7 +8,8 @@ const CardEvent = observer(({ data }: any) => {
     "relative inline-block font-bold cursor-pointer before:block before:absolute before:-inset-1 ";
 
   const [visibleEl, setVisibleEl] = useState("hidden");
-  const [visibleTooltip, setVisibleTooltip] = useState("hidden");
+  // const [visibleTooltip, setVisibleTooltip] = useState("hidden");
+  const [tooltip, setTooltip] = useState(0);
   const [dateEl, setDateEl] = useState(
     styleDateEl + "before:bg-sky-800 text-white"
   );
@@ -23,7 +24,6 @@ const CardEvent = observer(({ data }: any) => {
 
   const setColorDateEl = () => {
     const now = new Date();
-    // console.log(now.getDate(), now.getMonth() + 1, now.getDay());
     const day = new Date(data.attributes.date_to);
     if (day.getDay() === 6 || day.getDay() === 0) {
       setDateEl(styleDateEl + " before:bg-yellow-400");
@@ -44,11 +44,10 @@ const CardEvent = observer(({ data }: any) => {
     visibleEl == "hidden" ? setVisibleEl("") : setVisibleEl("hidden");
   };
 
-  const getTooltip = () => {
-    console.log("Показать все события в этот день");
-    setVisibleTooltip("");
+  const getTooltip = (num: number) => {
+    setTooltip(num);
     setTimeout(() => {
-      setVisibleTooltip("hidden");
+      setTooltip(0);
     }, 1000);
   };
 
@@ -56,16 +55,17 @@ const CardEvent = observer(({ data }: any) => {
     // store.dataFilter = new Date(data.attributes.date_to).getDate();
     const dataFilter = new Date(data.attributes.date_to).getDate();
     store.setDataFilter(dataFilter);
+    store.setСurrentTab(99);
   };
 
   const sortByGeom = () => {
     const eventLat = data.attributes.geom_lat;
     const eventLong = data.attributes.geom_long;
     store.setCoordEvent(eventLat, eventLong);
+    store.setСurrentTab(99);
   };
 
   const removeEvent = () => {
-    // console.log("Скрыть. Не интересно...");
     console.log("Remove!", data.objectId);
     let removedEvents =
       JSON.parse(localStorage.getItem("removedEvents") || "[]") || [];
@@ -95,7 +95,7 @@ const CardEvent = observer(({ data }: any) => {
       >
         <div className="relative cursor-pointer" onClick={() => removeEvent()}>
           <svg
-            className="absolute top-0 right-0"
+            className="absolute top-0 right-0 z-10"
             width="18"
             height="18"
             viewBox="0 0 18 18"
@@ -108,28 +108,37 @@ const CardEvent = observer(({ data }: any) => {
         </div>
 
         <h1
-          className="font-sans text-2xl font-bold text-sky-700 cursor-pointer pb-4"
+          className="relative font-sans text-2xl font-bold text-sky-700 cursor-pointer pb-4"
           onClick={() => getFullCard()}
-          // onMouseEnter={() => getTooltip()}
+          onMouseEnter={() => getTooltip(1)}
         >
           {data.attributes.name}
+          <div
+            className={
+              tooltip === 1
+                ? " absolute -top-10 right-100 font-normal text-slate-900 text-sm bg-opacity-90 bg-white inline-block before:block before:absolute before:-inset-1 shadow-md p-2"
+                : "hidden"
+            }
+          >
+            Подробнее
+          </div>
         </h1>
-
-        {/* <div
-          className={
-            visibleTooltip +
-            " absolute -top-10 right-100 inline-block before:block before:absolute before:-inset-1 shadow-md p-2"
-          }
-        >
-          Подробнее
-        </div> */}
 
         <span
           className={dateEl}
           onClick={() => sortByDate()}
-          // onMouseEnter={() => getTooltip()}
+          onMouseEnter={() => getTooltip(2)}
         >
           <span className="relative leading-normal p-2">{dateText}</span>
+          <div
+            className={
+              tooltip === 2
+                ? "absolute -top-10 z-10 right-100 font-normal bg-opacity-90 bg-white w-40 text-slate-900 text-sm inline-block before:block before:absolute before:-inset-1 shadow-md p-2"
+                : "hidden"
+            }
+          >
+            Показать все события в этот день
+          </div>
         </span>
 
         <p className="text-base pt-1">{data.attributes.text_time}</p>
@@ -191,19 +200,29 @@ const CardEvent = observer(({ data }: any) => {
         <span
           className="before:block before:absolute before:-inset-1 before:bg-blue-100 relative inline-block font-bold cursor-pointer"
           onClick={() => sortByGeom()}
-          onMouseEnter={() => console.log("Показать события рядом")}
+          onMouseEnter={() => getTooltip(3)}
         >
           <span className="relative leading-normal p-2">
             {data.attributes.address}
           </span>
-          <p className="relative text-sm font-light p-1">
+          <div className="relative text-sm font-light p-1">
             {data.attributes.place}
-          </p>
+            <div
+              className={
+                tooltip === 3
+                  ? " absolute -top-0 z-20 right-100 font-normal w-40 bg-opacity-90 bg-white text-slate-900 text-sm inline-block before:block before:absolute before:-inset-1 rounded-md shadow-md p-2"
+                  : "hidden"
+              }
+            >
+              Показать все события рядом
+            </div>
+          </div>
         </span>
 
         <div
           className="relative cursor-pointer"
           onClick={() => addFavoriteEvent()}
+          onMouseEnter={() => getTooltip(4)}
         >
           <svg
             className="absolute bottom-0 right-0"
@@ -219,6 +238,15 @@ const CardEvent = observer(({ data }: any) => {
               strokeWidth="2"
             />
           </svg>
+          <div
+            className={
+              tooltip === 4
+                ? " absolute -top-0 right-10 font-normal text-slate-900 text-sm bg-opacity-90 bg-white inline-block before:block before:absolute before:-inset-1 rounded-md shadow-md p-2"
+                : "delay-1000 hidden"
+            }
+          >
+            Добавить в Избранное
+          </div>
         </div>
       </div>
     </>

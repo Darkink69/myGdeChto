@@ -10,7 +10,7 @@ const AllEvents = observer(() => {
     " underline decoration-4 underline-offset-8 decoration-sky-500";
   const [events, setEvents] = useState<any>(null);
   const [shownEvents, setshownEvents] = useState<any>(null);
-  const [currentTab, setCurrentTab] = useState(0);
+  // const [currentTab, setCurrentTab] = useState(0);
 
   const jsonFetch = () => {
     fetch(
@@ -40,7 +40,7 @@ const AllEvents = observer(() => {
       }
     );
     setshownEvents(shownEvents);
-    setCurrentTab(0);
+    store.setСurrentTab(0);
   };
 
   const sortFavorites = () => {
@@ -52,7 +52,7 @@ const AllEvents = observer(() => {
       }
     });
     setshownEvents(shownEvents);
-    setCurrentTab(2);
+    store.setСurrentTab(2);
   };
 
   const shuffleEvents = () => {
@@ -77,11 +77,41 @@ const AllEvents = observer(() => {
     });
 
     setshownEvents(soonEvents);
-    setCurrentTab(1);
+    store.setСurrentTab(1);
+  };
+
+  const sortSearch = () => {
+    console.log(store.requestSearch);
+    let searchedEvents: { objectId: string | Number | null }[] = [];
+    events?.map((item: any) => {
+      // console.log(item.attributes.type_for_search);
+      if (
+        item.attributes.type_for_search !== null &&
+        item.attributes.type_for_search
+          .toLowerCase()
+          .includes(store.requestSearch.toLowerCase())
+      ) {
+        // console.log(item.attributes.type_for_search, "null..");
+        searchedEvents.push(item);
+      }
+
+      // if (
+      //   item.attributes.description !== null &&
+      //   item.attributes.description
+      //     .toLowerCase()
+      //     .includes(store.requestSearch.toLowerCase())
+      // ) {
+      //   console.log(item.attributes.description, "null..");
+      //   searchedEvents.push(item);
+      // }
+    });
+
+    setshownEvents(searchedEvents);
   };
 
   useEffect(() => {
     jsonFetch();
+    sortEvents();
     store.checkEvents();
     store.setAllEvents(shownEvents?.length);
     document.title = `ЧёКаво. ${store.titleCities[store.currentCity]}`;
@@ -122,12 +152,16 @@ const AllEvents = observer(() => {
     setshownEvents(coordEvents);
   }, [store.eventLat, store.eventLong]);
 
+  useEffect(() => {
+    sortSearch();
+  }, [store.requestSearch]);
+
   return (
     <>
-      <div className="flex items-center pt-32 relative">
+      <div className="md:flex md:items-center pt-32 relative">
         <h1
           className={
-            currentTab == 0
+            store.currentTab == 0
               ? underlineTabStyle +
                 " pr-2 cursor-pointer text-slate-600 font-bold "
               : " pr-2 cursor-pointer text-slate-600 font-bold"
@@ -144,7 +178,7 @@ const AllEvents = observer(() => {
         </span>
         <p
           className={
-            currentTab == 1
+            store.currentTab == 1
               ? underlineTabStyle +
                 " pl-8 pr-8 font-bold text-sky-400 cursor-pointer"
               : " pl-8 pr-8 font-bold text-sky-400 cursor-pointer"
@@ -163,7 +197,7 @@ const AllEvents = observer(() => {
 
         <p
           className={
-            currentTab == 2
+            store.currentTab == 2
               ? underlineTabStyle +
                 " pr-2 font-bold text-slate-600 cursor-pointer"
               : " pr-2 font-bold text-slate-600 cursor-pointer"
@@ -182,9 +216,10 @@ const AllEvents = observer(() => {
           </span>
         )}
         <p className="pl-4 pr-4 font-bold text-slate-600">На карте</p>
-
+        <p className="pr-4 font-bold text-slate-600">Рекомендации</p>
         <p className="pr-4 font-bold text-slate-600">Прошедшие</p>
-        <button className="bg-teal-600 hover:bg-sky-700 font-bold text-white h-10 w-48 rounded-md absolute right-0">
+
+        <button className="transition ease-in-out delay-100 bg-teal-600 hover:bg-sky-700 font-bold text-white h-10 w-48 rounded-md absolute right-0">
           Добавить событие
         </button>
       </div>

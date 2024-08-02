@@ -1,17 +1,15 @@
 import { observer } from "mobx-react-lite";
-import { SetStateAction, useState } from "react";
 import store from "../store/store";
 
 const Header = observer(() => {
-  const [value, setValue] = useState("");
+  // const [value, setValue] = useState("");
 
-  const handleChange = (event: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setTimeout(() => {
-      store.setRequest(value);
-    }, 2000);
-    setValue(event.target.value);
+  const handleChange = (event: { target: { value: string } }) => {
+    // setTimeout(() => {
+    //   // store.setRequest(value);
+    // }, 2000);
+    store.setRequest(event.target.value);
+    // setValue(event.target.value);
     // console.log(value);
   };
 
@@ -24,10 +22,10 @@ const Header = observer(() => {
   };
 
   return (
-    <div className="fixed bg-[url('../src/assets/header_bg.jpg')] z-10 h-[100px] w-full px-5 shadow-md">
-      <div className="flex items-center sm:pl-44 pl-28">
+    <div className="fixed bg-[url('../src/assets/header_bg.jpg')] z-20 sm:h-[100px] h-[50px] w-full px-5 shadow-md">
+      <div className="flex items-center xl:pl-40 pl-4">
         <svg
-          className="cursor-pointer"
+          className="cursor-pointer m-1"
           onClick={() =>
             window.scrollTo({
               top: 0,
@@ -35,8 +33,8 @@ const Header = observer(() => {
               behavior: "smooth",
             })
           }
-          width="100"
-          height="100"
+          width="90"
+          height="90"
           viewBox="0 0 100 100"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -108,18 +106,18 @@ const Header = observer(() => {
           </defs>
         </svg>
         <p
-          className="pl-8 font-sans font-bold text-3xl text-white cursor-pointer"
+          className="pl-4 font-sans font-bold text-3xl text-white cursor-pointer"
           onClick={() => changeCity()}
         >
           {store.titleCities[store.currentCity]}
         </p>
 
-        <form className="absolute mr-72 right-0">
+        <form className="absolute mr-72 right-0 hidden lg:block">
           <div className="flex items-center">
             <input
               className="border border-white bg-transparent text-white placeholder-white placeholder-opacity-50 rounded-md h-10 w-80 outline-none"
               type="text"
-              value={value}
+              value={store.requestSearch}
               placeholder="  Поиск"
               onChange={handleChange}
             />
@@ -157,7 +155,7 @@ const Header = observer(() => {
         </div> */}
 
         <svg
-          className="absolute mr-44 right-0 cursor-pointer"
+          className="absolute xl:mr-44 mr-4 right-0 cursor-pointer"
           width="70"
           height="70"
           viewBox="0 0 70 70"
