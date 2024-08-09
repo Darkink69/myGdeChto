@@ -63,6 +63,8 @@ const CardEvent = observer(({ data }: any) => {
     const eventLong = data.attributes.geom_long;
     store.setCoordEvent(eventLat, eventLong);
     store.setСurrentTab(99);
+    store.x = data.attributes.geom_lat;
+    store.y = data.attributes.geom_long;
   };
 
   const removeEvent = () => {

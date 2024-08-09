@@ -2,15 +2,11 @@ import { observer } from "mobx-react-lite";
 import store from "../store/store";
 
 const Header = observer(() => {
-  // const [value, setValue] = useState("");
-
   const handleChange = (event: { target: { value: string } }) => {
-    // setTimeout(() => {
-    //   // store.setRequest(value);
-    // }, 2000);
+    // const requestSearch = event.target.value;
+    // store.setRequest(requestSearch.toLowerCase().split(" "));
     store.setRequest(event.target.value);
-    // setValue(event.target.value);
-    // console.log(value);
+    // console.log(requestSearch.toLowerCase().split(" "));
   };
 
   const changeCity = () => {

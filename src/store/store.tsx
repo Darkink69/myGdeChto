@@ -2,6 +2,12 @@ import { makeAutoObservable } from "mobx";
 
 class Store {
   cities = ["novosibirsk", "moscow", "tomsk", "chelyabinsk"];
+  sourceCities = [
+    "novosibirsk",
+    "moscow_and_the_moscow_region",
+    "tomsk",
+    "chelyabinsk",
+  ];
   titleCities = ["Новосибирск", "Москва", "Томск", "Озерск"];
   currentCity = JSON.parse(localStorage.getItem("currentCity") || "0") || 0;
   currentTab = 0;
@@ -12,6 +18,11 @@ class Store {
   requestSearch = "";
   eventLat = 0.0;
   eventLong = 0.0;
+
+  x = "82.91145801544192";
+  y = "54.934027555826844";
+  scale = "2256";
+  sourceCity = `https://gde-chto.ru/catalog/novosibirsk#&scale=${this.scale}&centerX=${this.x}&centerY=${this.y}`;
 
   constructor() {
     makeAutoObservable(this);
@@ -35,8 +46,9 @@ class Store {
     this.eventLong = eventLong;
   }
 
-  setRequest(value: string) {
+  setRequest(value: any) {
     this.requestSearch = value;
+    // console.log(typeof value);
     // setTimeout(() => {
     //   console.log(value, "store!");
     // }, 2000);

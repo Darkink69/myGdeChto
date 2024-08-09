@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import store from "../store/store";
 import CardEvent from "./CardEvent";
+import AllMap from "./YMaps";
 import { useEffect, useState } from "react";
 
 const AllEvents = observer(() => {
@@ -10,7 +11,7 @@ const AllEvents = observer(() => {
     " underline decoration-4 underline-offset-8 decoration-sky-500";
   const [events, setEvents] = useState<any>(null);
   const [shownEvents, setshownEvents] = useState<any>(null);
-  // const [currentTab, setCurrentTab] = useState(0);
+  const [map, setMap] = useState(true);
 
   const jsonFetch = () => {
     fetch(
@@ -40,6 +41,7 @@ const AllEvents = observer(() => {
       }
     );
     setshownEvents(shownEvents);
+    // store.setAllEvents(shownEvents?.length);
     store.setСurrentTab(0);
   };
 
@@ -81,49 +83,72 @@ const AllEvents = observer(() => {
   };
 
   const sortSearch = () => {
-    console.log(store.requestSearch);
+    // console.log(store.requestSearch);
+    const wordsSearch = store.requestSearch.toLowerCase().split(" ");
+    console.log(wordsSearch);
     let searchedEvents: { objectId: string | Number | null }[] = [];
     events?.map((item: any) => {
-      // console.log(item.attributes.type_for_search);
-      if (
-        item.attributes.type_for_search !== null &&
-        item.attributes.type_for_search
-          .toLowerCase()
-          .includes(store.requestSearch.toLowerCase())
-      ) {
-        // console.log(item.attributes.type_for_search, "null..");
-        searchedEvents.push(item);
+      if (item.attributes.name !== null) {
+        const wordsDes = item.attributes.name.toLowerCase().split(" ");
+
+        const filteredArray = wordsSearch.filter((val) =>
+          wordsDes.includes(val)
+        );
+
+        if (filteredArray.length !== 0) {
+          searchedEvents.push(item);
+        }
       }
 
       // if (
-      //   item.attributes.description !== null &&
-      //   item.attributes.description
-      //     .toLowerCase()
-      //     .includes(store.requestSearch.toLowerCase())
+      //   (item.attributes.name !== null &&
+      //     item.attributes.name.toLowerCase().includes(store.requestSearch)) ||
+      //   (item.attributes.description !== null &&
+      //     item.attributes.description
+      //       .toLowerCase()
+      //       .includes(store.requestSearch))
       // ) {
-      //   console.log(item.attributes.description, "null..");
+      //   // console.log(item.attributes.type_for_search, "null..");
       //   searchedEvents.push(item);
       // }
     });
 
+    // const resultSearch = [];
+    // const wordsSearch = value.toLowerCase().split(" ");
+    // // console.log(wordsSearch);
+    // trackData.map((item) => {
+    //   const wordsTrack = item.title.toLowerCase().split(" ");
+    //   const filteredArray = wordsSearch.filter((val) =>
+    //     wordsTrack.includes(val)
+    //   );
+
+    //   if (filteredArray.length !== 0) {
+    //     console.log(item.title);
+    //     resultSearch.push(item);
+    //   }
+    // });
+
     setshownEvents(searchedEvents);
+  };
+
+  const useMap = () => {
+    map ? setMap(false) : setMap(true);
   };
 
   useEffect(() => {
     jsonFetch();
     sortEvents();
     store.checkEvents();
-    store.setAllEvents(shownEvents?.length);
     document.title = `ЧёКаво. ${store.titleCities[store.currentCity]}`;
   }, [store.currentCity]);
 
   useEffect(() => {
     sortEvents();
-    store.setAllEvents(shownEvents?.length);
+    store.setAllEvents(events?.length);
   }, [events, store.allEvents, store.removedEvents, store.dataFilter]);
 
   useEffect(() => {
-    console.log(store.dataFilter);
+    // console.log(store.dataFilter);
     let dateEvents: { objectId: string | Number | null }[] = [];
     events?.map(
       (item: { attributes: any; objectId: string | Number | null }) => {
@@ -136,8 +161,6 @@ const AllEvents = observer(() => {
   }, [store.dataFilter]);
 
   useEffect(() => {
-    console.log(store.eventLat);
-    console.log(store.eventLong);
     let coordEvents: { objectId: string | Number | null }[] = [];
     shownEvents?.map(
       (item: { attributes: any; objectId: string | Number | null }) => {
@@ -154,11 +177,20 @@ const AllEvents = observer(() => {
 
   useEffect(() => {
     sortSearch();
+    setMap(false);
   }, [store.requestSearch]);
 
   return (
     <>
-      <div className="md:flex md:items-center pt-32 relative">
+      {map && <AllMap />}
+
+      <div
+        className={
+          map
+            ? "pt-8 md:flex md:items-center relative"
+            : "pt-32 md:flex md:items-center relative"
+        }
+      >
         <h1
           className={
             store.currentTab == 0
@@ -215,13 +247,19 @@ const AllEvents = observer(() => {
             {store.favoriteEvents.length}
           </span>
         )}
-        <p className="pl-4 pr-4 font-bold text-slate-600">На карте</p>
-        <p className="pr-4 font-bold text-slate-600">Рекомендации</p>
-        <p className="pr-4 font-bold text-slate-600">Прошедшие</p>
 
-        <button className="transition ease-in-out delay-100 bg-teal-600 hover:bg-sky-700 font-bold text-white h-10 w-48 rounded-md absolute right-0">
+        {/* <p className="pr-4 font-bold text-slate-600">Рекомендации</p>
+        <p className="pr-4 font-bold text-slate-600">Прошедшие</p> */}
+
+        {/* <button className="transition ease-in-out delay-100 bg-teal-600 hover:bg-sky-700 font-bold text-white h-10 w-48 rounded-md absolute right-0">
           Добавить событие
-        </button>
+        </button> */}
+        <p
+          className="pl-4 pr-4 font-bold text-sky-400 cursor-pointer absolute right-0"
+          onClick={() => useMap()}
+        >
+          {map ? "Скрыть карту" : "Показать карту"}
+        </p>
       </div>
 
       <div className="grid items-start sm:grid-cols-3 grid-cols-1 2xl:grid-cols-4 gap-4 pt-8">
