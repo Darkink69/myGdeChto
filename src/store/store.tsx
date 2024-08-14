@@ -9,6 +9,25 @@ class Store {
     "chelyabinsk",
   ];
   titleCities = ["Новосибирск", "Москва", "Томск", "Озерск"];
+  typesEvent = [
+    "",
+    "Музыка",
+    "Выставки",
+    "Праздники",
+    "Дети",
+    "Спорт",
+    "Курсы",
+    "Танцы",
+    "Еда",
+    "Игры",
+    "Ярмарки",
+    "",
+    "Экскурсии",
+    "Театр #Кино",
+    "Тренировки",
+    "Вечеринки",
+  ];
+  currentType = 0;
   currentCity = JSON.parse(localStorage.getItem("currentCity") || "0") || 0;
   currentTab = 0;
   allEvents = 0;
@@ -19,10 +38,16 @@ class Store {
   eventLat = 0.0;
   eventLong = 0.0;
 
-  x = "82.91145801544192";
-  y = "54.934027555826844";
-  scale = "2256";
-  sourceCity = `https://gde-chto.ru/catalog/novosibirsk#&scale=${this.scale}&centerX=${this.x}&centerY=${this.y}`;
+  x = "83.06831359863283";
+  y = "54.93227079942556";
+  // scale = "2256";
+  scale = "288895";
+  sourceCity = `https://gde-chto.ru/catalog/${
+    this.sourceCities[this.currentCity]
+  }#}`;
+  // sourceCity = `https://gde-chto.ru/catalog/${
+  //   this.sourceCities[this.currentCity]
+  // }#&scale=${this.scale}&centerX=${this.x}&centerY=${this.y}`;
 
   constructor() {
     makeAutoObservable(this);

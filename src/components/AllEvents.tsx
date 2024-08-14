@@ -3,6 +3,9 @@ import store from "../store/store";
 import CardEvent from "./CardEvent";
 import AllMap from "./YMaps";
 import { useEffect, useState } from "react";
+import { Input } from "antd";
+
+const { Search } = Input;
 
 const AllEvents = observer(() => {
   const toleranceLat = 0.01;
@@ -79,17 +82,19 @@ const AllEvents = observer(() => {
     });
 
     setshownEvents(soonEvents);
+    setMap(false);
     store.setСurrentTab(1);
   };
 
-  const sortSearch = () => {
-    // console.log(store.requestSearch);
-    const wordsSearch = store.requestSearch.toLowerCase().split(" ");
+  const onSearch = (value: string, _e: any) => {
+    console.log(value);
+    // const wordsSearch = store.requestSearch.toLowerCase().split(" ");
+    const wordsSearch = value.toLowerCase().split(" ");
     console.log(wordsSearch);
     let searchedEvents: { objectId: string | Number | null }[] = [];
     events?.map((item: any) => {
-      if (item.attributes.name !== null) {
-        const wordsDes = item.attributes.name.toLowerCase().split(" ");
+      if (item.attributes.description !== null) {
+        const wordsDes = item.attributes.description.toLowerCase().split(" ");
 
         const filteredArray = wordsSearch.filter((val) =>
           wordsDes.includes(val)
@@ -99,20 +104,13 @@ const AllEvents = observer(() => {
           searchedEvents.push(item);
         }
       }
-
-      // if (
-      //   (item.attributes.name !== null &&
-      //     item.attributes.name.toLowerCase().includes(store.requestSearch)) ||
-      //   (item.attributes.description !== null &&
-      //     item.attributes.description
-      //       .toLowerCase()
-      //       .includes(store.requestSearch))
-      // ) {
-      //   // console.log(item.attributes.type_for_search, "null..");
-      //   searchedEvents.push(item);
-      // }
     });
-
+    // if (value.length === 0) {
+    //   console.log(value.length, "!!");
+    //   setTrackData(station.jsonData);
+    //   setShowTracks(50);
+    //   setIsLoaded(true);
+    // }
     // const resultSearch = [];
     // const wordsSearch = value.toLowerCase().split(" ");
     // // console.log(wordsSearch);
@@ -121,14 +119,15 @@ const AllEvents = observer(() => {
     //   const filteredArray = wordsSearch.filter((val) =>
     //     wordsTrack.includes(val)
     //   );
-
     //   if (filteredArray.length !== 0) {
     //     console.log(item.title);
     //     resultSearch.push(item);
     //   }
     // });
-
+    // setTrackData(resultSearch);
+    // setShowTracks(resultSearch.length);
     setshownEvents(searchedEvents);
+    store.setСurrentTab(99);
   };
 
   const useMap = () => {
@@ -158,6 +157,7 @@ const AllEvents = observer(() => {
       }
     );
     setshownEvents(dateEvents);
+    setMap(false);
   }, [store.dataFilter]);
 
   useEffect(() => {
@@ -173,12 +173,23 @@ const AllEvents = observer(() => {
       }
     );
     setshownEvents(coordEvents);
-  }, [store.eventLat, store.eventLong]);
+    setMap(false);
+    setMap(true);
+    console.log(store.x);
+  }, [store.x, store.y]);
 
   useEffect(() => {
-    sortSearch();
-    setMap(false);
-  }, [store.requestSearch]);
+    console.log(store.currentType);
+    let typeEvents: { objectId: string | Number | null }[] = [];
+    shownEvents?.map(
+      (item: { attributes: any; objectId: string | Number | null }) => {
+        if (item.attributes.type === store.currentType) {
+          typeEvents.push(item);
+        }
+      }
+    );
+    setshownEvents(typeEvents);
+  }, [store.currentType]);
 
   return (
     <>
@@ -247,6 +258,14 @@ const AllEvents = observer(() => {
             {store.favoriteEvents.length}
           </span>
         )}
+
+        <Search
+          className="pl-8"
+          placeholder="Поиск событий"
+          onSearch={onSearch}
+          style={{ width: 200 }}
+          // allowClear={true}
+        />
 
         {/* <p className="pr-4 font-bold text-slate-600">Рекомендации</p>
         <p className="pr-4 font-bold text-slate-600">Прошедшие</p> */}

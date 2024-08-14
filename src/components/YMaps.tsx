@@ -1,27 +1,27 @@
 // import { useEffect, useState } from "react";
 import store from "../store/store";
 import { observer } from "mobx-react-lite";
-// import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 const AllMap = observer(() => {
-  // const [zoom, setZoom] = useState(10);
-  let sourceCity = `https://gde-chto.ru/${
-    store.sourceCities[store.currentCity]
-  }#`;
   let w = "1500";
-  // let sourceCity = store.sourceCity;
+  let h = "600";
 
-  // useEffect(() => {
-  //   // sourceCity =
-  //   //   `https://gde-chto.ru/${store.sourceCities[store.currentCity]}#` +
-  //   //   `&scale=${store.scale}&centerX=${store.x}&centerY=${store.y}`;
-  //   sourceCity = store.sourceCity;
-  // }, [zoom]);
+  useEffect(() => {
+    store.sourceCity =
+      `https://gde-chto.ru/${store.sourceCities[store.currentCity]}#` +
+      `&scale=${store.scale}&centerX=${store.x}&centerY=${store.y}`;
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [store.x, store.y]);
 
   return (
     <>
       <div className="pt-28">
-        <iframe src={sourceCity} width={w} height="600"></iframe>
+        <iframe src={store.sourceCity} width={w} height={h}></iframe>
       </div>
     </>
   );

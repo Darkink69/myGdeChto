@@ -8,6 +8,7 @@ const CardEvent = observer(({ data }: any) => {
     "relative inline-block font-bold cursor-pointer before:block before:absolute before:-inset-1 ";
 
   const [visibleEl, setVisibleEl] = useState("hidden");
+  const [fav, setFav] = useState(false);
   // const [visibleTooltip, setVisibleTooltip] = useState("hidden");
   const [tooltip, setTooltip] = useState(0);
   const [dateEl, setDateEl] = useState(
@@ -65,6 +66,12 @@ const CardEvent = observer(({ data }: any) => {
     store.setСurrentTab(99);
     store.x = data.attributes.geom_lat;
     store.y = data.attributes.geom_long;
+    store.scale = "2256";
+  };
+
+  const sortByType = () => {
+    store.currentType = data.attributes.type;
+    store.setСurrentTab(99);
   };
 
   const removeEvent = () => {
@@ -83,6 +90,7 @@ const CardEvent = observer(({ data }: any) => {
     favoriteEvents.push(data.objectId);
     localStorage.setItem("favoriteEvents", JSON.stringify(favoriteEvents));
     store.checkEvents();
+    setFav(true);
   };
 
   useEffect(() => {
@@ -147,8 +155,19 @@ const CardEvent = observer(({ data }: any) => {
         {/* <p>{data.objectId}</p> */}
         {/* <p>{data.attributes.approve}</p> */}
 
+        <img
+          className={
+            visibleEl === "hidden"
+              ? "cursor-pointer pt-4 pb-4 hover:drop-shadow-lg"
+              : "hidden"
+          }
+          src={data.attributes.img}
+          alt=""
+          onClick={() => getFullCard()}
+        />
+
         <Image
-          className="pt-4 pb-4 w-full"
+          className={visibleEl + " pt-4 pb-4 w-full"}
           // width={200}
           src={data.attributes.img}
         />
@@ -199,12 +218,35 @@ const CardEvent = observer(({ data }: any) => {
           </div>
         </div>
 
+        <p
+          className={
+            visibleEl + " pb-4 text-sm font-bold text-pink-700 cursor-pointer"
+          }
+          onClick={() => sortByType()}
+        >
+          #{store.typesEvent[data.attributes.type]}
+        </p>
+
+        <div
+          className={
+            !visibleEl
+              ? "hidden"
+              : "transition ease-in-out delay-100 border-2 hover:border-white rounded border-blue-400 p-2 pt-1 pb-1 hover:bg-blue-200 text-sm text-blue-400 hover:text-black relative inline-block cursor-pointer"
+          }
+          onClick={() => sortByGeom()}
+        >
+          Показать на карте
+        </div>
+
         <span
-          className="before:block before:absolute before:-inset-1 before:bg-blue-100 relative inline-block font-bold cursor-pointer"
+          className={
+            visibleEl +
+            " before:block before:absolute before:-inset-1 before:bg-blue-100 relative inline-block font-bold cursor-pointer"
+          }
           onClick={() => sortByGeom()}
           onMouseEnter={() => getTooltip(3)}
         >
-          <span className="relative leading-normal p-2">
+          <span className=" relative leading-normal p-2">
             {data.attributes.address}
           </span>
           <div className="relative text-sm font-light p-1">
@@ -216,7 +258,7 @@ const CardEvent = observer(({ data }: any) => {
                   : "hidden"
               }
             >
-              Показать все события рядом
+              Показать на карте и другие события рядом
             </div>
           </div>
         </span>
@@ -226,20 +268,38 @@ const CardEvent = observer(({ data }: any) => {
           onClick={() => addFavoriteEvent()}
           onMouseEnter={() => getTooltip(4)}
         >
-          <svg
-            className="absolute bottom-0 right-0"
-            width="29"
-            height="27"
-            viewBox="0 0 29 27"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M14.5 1.23607L17.0289 9.01925C17.2967 9.8433 18.0646 10.4012 18.931 10.4012H27.1147L20.494 15.2115C19.793 15.7208 19.4997 16.6235 19.7674 17.4476L22.2963 25.2307L15.6756 20.4205C14.9746 19.9112 14.0254 19.9112 13.3244 20.4205L6.70366 25.2307L9.23257 17.4476C9.50031 16.6235 9.207 15.7208 8.50603 15.2115L7.91824 16.0205L8.50602 15.2115L1.88525 10.4012L10.069 10.4012C10.9354 10.4012 11.7033 9.8433 11.9711 9.01925L14.5 1.23607Z"
-              stroke="#3399FF"
-              strokeWidth="2"
-            />
-          </svg>
+          {fav ? (
+            <svg
+              className="absolute bottom-0 right-0"
+              width="29"
+              height="27"
+              viewBox="0 0 29 27"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.15 1.62012L16.68 9.40012C16.95 10.2201 17.72 10.7801 18.58 10.7801H26.76L20.14 15.5901C19.44 16.1001 19.15 17.0001 19.41 17.8301L21.94 25.6101L15.32 20.8001C14.62 20.2901 13.67 20.2901 12.97 20.8001L6.35004 25.6101L8.88004 17.8301C9.15004 17.0101 8.85004 16.1001 8.15004 15.5901L1.54004 10.7801H9.72004C10.59 10.7801 11.35 10.2201 11.62 9.40012L14.15 1.62012Z"
+                fill="#3399FF"
+                stroke="#3399FF"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="absolute bottom-0 right-0"
+              width="29"
+              height="27"
+              viewBox="0 0 29 27"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M14.5 1.23607L17.0289 9.01925C17.2967 9.8433 18.0646 10.4012 18.931 10.4012H27.1147L20.494 15.2115C19.793 15.7208 19.4997 16.6235 19.7674 17.4476L22.2963 25.2307L15.6756 20.4205C14.9746 19.9112 14.0254 19.9112 13.3244 20.4205L6.70366 25.2307L9.23257 17.4476C9.50031 16.6235 9.207 15.7208 8.50603 15.2115L7.91824 16.0205L8.50602 15.2115L1.88525 10.4012L10.069 10.4012C10.9354 10.4012 11.7033 9.8433 11.9711 9.01925L14.5 1.23607Z"
+                stroke="#3399FF"
+                strokeWidth="2"
+              />
+            </svg>
+          )}
+
           <div
             className={
               tooltip === 4
