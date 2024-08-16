@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Image } from "antd";
 
 const CardEvent = observer(({ data }: any) => {
+  const [img, setImg] = useState(null);
   const styleDateEl =
     "relative inline-block font-bold cursor-pointer before:block before:absolute before:-inset-1 ";
 
@@ -16,12 +17,16 @@ const CardEvent = observer(({ data }: any) => {
   );
   const [dateText, setDateText] = useState(data.attributes.text_date);
 
-  // type Data = {
-  //   name: string;
-  //   body: string;
-  //   userId: number;
-  //   id: number;
-  // };
+  const getImg = () => {
+    fetch(
+      `https://gde-chto.ru/elitegis/rest/services/${
+        store.cities[store.currentCity]
+      }/sights/MapServer/${data.layerId}/${data.objectId}/attachments/`
+    )
+      .then((response) => response.json())
+      .then((data) => setImg(data.attachmentInfos[1].id))
+      .catch((error) => console.error(error));
+  };
 
   const setColorDateEl = () => {
     const now = new Date();
@@ -94,6 +99,7 @@ const CardEvent = observer(({ data }: any) => {
   };
 
   useEffect(() => {
+    getImg();
     setColorDateEl();
   }, []);
 
@@ -118,7 +124,7 @@ const CardEvent = observer(({ data }: any) => {
         </div>
 
         <h1
-          className="relative font-sans text-2xl font-bold text-sky-700 cursor-pointer pb-4"
+          className="relative font-sans sm:text-2xl text-md font-bold text-sky-700 cursor-pointer pb-4"
           onClick={() => getFullCard()}
           onMouseEnter={() => getTooltip(1)}
         >
@@ -151,28 +157,49 @@ const CardEvent = observer(({ data }: any) => {
           </div>
         </span>
 
-        <p className="text-base pt-1">{data.attributes.text_time}</p>
+        <p className="text-sm sm:text-base pt-1">{data.attributes.text_time}</p>
         {/* <p>{data.objectId}</p> */}
         {/* <p>{data.attributes.approve}</p> */}
+        <p className="text-xs">
+          {data.distanceInMeters} метров до меня, это для теста
+        </p>
 
         <img
           className={
             visibleEl === "hidden"
-              ? "cursor-pointer pt-4 pb-4 hover:drop-shadow-lg"
+              ? "cursor-pointer sm:pt-4 pt-1 sm:pb-4 pb-0 hover:drop-shadow-lg"
               : "hidden"
           }
-          src={data.attributes.img}
+          // src={data.attributes.img}
+          src={
+            img
+              ? `https://gde-chto.ru/elitegis/rest/services/${
+                  store.cities[store.currentCity]
+                }/sights/MapServer/${data.layerId}/${
+                  data.objectId
+                }/attachments/${img}`
+              : "https://images.squarespace-cdn.com/content/v1/5bb039b60490792e51c69930/1580611723040-VT133WFQRDI3Y2AUTK2B/giphy+%281%29.gif"
+          }
           alt=""
           onClick={() => getFullCard()}
+          // onClick={() => getImg()}
         />
 
         <Image
           className={visibleEl + " pt-4 pb-4 w-full"}
           // width={200}
-          src={data.attributes.img}
+          src={`https://gde-chto.ru/elitegis/rest/services/${
+            store.cities[store.currentCity]
+          }/sights/MapServer/${data.layerId}/${
+            data.objectId
+          }/attachments/${img}`}
         />
-        <p className={visibleEl + " text-sm"}>{data.attributes.description}</p>
-        <p className={visibleEl + " text-sm"}>{data.attributes.note}</p>
+        <p className={visibleEl + " text-xs sm:text-sm"}>
+          {data.attributes.description}
+        </p>
+        <p className={visibleEl + " text-xs sm:text-sm"}>
+          {data.attributes.note}
+        </p>
         <p className={visibleEl + " pt-2"}>{data.attributes.phone}</p>
         <a className={visibleEl} href={data.attributes.site} target="_blank">
           <p className="pb-2 text-sky-700">{data.attributes.site}</p>

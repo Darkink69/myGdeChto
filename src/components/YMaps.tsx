@@ -4,7 +4,11 @@ import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 
 const AllMap = observer(() => {
-  let w = "1500";
+  // const [w, setW] = useState("1500");
+  let w =
+    window.innerWidth > 1536
+      ? window.innerWidth - 420
+      : window.innerWidth - 100;
   let h = "600";
 
   useEffect(() => {
@@ -18,9 +22,14 @@ const AllMap = observer(() => {
     });
   }, [store.x, store.y]);
 
+  // useEffect(() => {
+  //   setW("500");
+  // }, [window.innerWidth]);
+
   return (
     <>
       <div className="pt-28">
+        <p>{window.innerWidth}</p>
         <iframe src={store.sourceCity} width={w} height={h}></iframe>
       </div>
     </>

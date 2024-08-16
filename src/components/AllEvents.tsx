@@ -10,6 +10,8 @@ const { Search } = Input;
 const AllEvents = observer(() => {
   const toleranceLat = 0.01;
   const toleranceLong = 0.005;
+  const distanceToMe = 2500;
+
   const underlineTabStyle =
     " underline decoration-4 underline-offset-8 decoration-sky-500";
   const [events, setEvents] = useState<any>(null);
@@ -17,10 +19,15 @@ const AllEvents = observer(() => {
   const [map, setMap] = useState(true);
 
   const jsonFetch = () => {
+    // fetch(
+    //   `https://raw.githubusercontent.com/Darkink69/design_work/main/all_events_now_${
+    //     store.cities[store.currentCity]
+    //   }.json`
+    // )
     fetch(
-      `https://raw.githubusercontent.com/Darkink69/design_work/main/all_events_now_${
+      `https://gde-chto.ru/elitegis/rest/services/${
         store.cities[store.currentCity]
-      }.json`
+      }/sights/MapServer/exts/CompositeSoe/Search?f=json&layerIds=201%2C102&definitionQueries=%7B%22102%22%3A%22type!%3D30%22%7D&geometryToDistance=%7B%22type%22%3A%22point%22%2C%22x%22%3A9248980.746105952%2C%22y%22%3A7336891.762952331%2C%22spatialReference%22%3A%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D%7D&orderByDisplayNames=false&returnGeometries=&outCoordinateSystems=%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D&compareType=contains&onlyInCaption=false&singleText=%D0%B0&returnFields=%5B%22*%22%5D&returnLabelPoints=&returnExtents=*&returnScore=true&ignoreCase=true&language=ru`
     )
       .then((response) => response.json())
       .then((data) => setEvents(data.results))
@@ -86,6 +93,19 @@ const AllEvents = observer(() => {
     store.setСurrentTab(1);
   };
 
+  const sortNextMeEvents = () => {
+    let nextToMeEvents: { objectId: string | Number | null }[] = [];
+    shownEvents.map((item: any) => {
+      if (item.distanceInMeters < distanceToMe) {
+        nextToMeEvents.push(item);
+      }
+    });
+
+    setshownEvents(nextToMeEvents);
+    setMap(false);
+    store.setСurrentTab(3);
+  };
+
   const onSearch = (value: string, _e: any) => {
     console.log(value);
     // const wordsSearch = store.requestSearch.toLowerCase().split(" ");
@@ -138,7 +158,7 @@ const AllEvents = observer(() => {
     jsonFetch();
     sortEvents();
     store.checkEvents();
-    document.title = `ЧёКаво. ${store.titleCities[store.currentCity]}`;
+    document.title = `ГдеЧто. ${store.titleCities[store.currentCity]}`;
   }, [store.currentCity]);
 
   useEffect(() => {
@@ -198,7 +218,7 @@ const AllEvents = observer(() => {
       <div
         className={
           map
-            ? "pt-8 md:flex md:items-center relative"
+            ? "pt-8 flex items-center relative"
             : "pt-32 md:flex md:items-center relative"
         }
       >
@@ -211,7 +231,7 @@ const AllEvents = observer(() => {
           }
           onClick={() => sortEvents()}
         >
-          Все события
+          Все мероприятия
         </h1>
         <span
           className="p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-slate-400 cursor-pointer"
@@ -223,8 +243,8 @@ const AllEvents = observer(() => {
           className={
             store.currentTab == 1
               ? underlineTabStyle +
-                " pl-8 pr-8 font-bold text-sky-400 cursor-pointer"
-              : " pl-8 pr-8 font-bold text-sky-400 cursor-pointer"
+                " pl-8 pr-8 font-bold text-slate-600 cursor-pointer"
+              : " pl-8 pr-8 font-bold text-slate-600 cursor-pointer"
           }
           onClick={() => sortSoonEvents()}
         >
@@ -232,7 +252,19 @@ const AllEvents = observer(() => {
         </p>
 
         <p
-          className="pr-8 font-bold text-sky-400 cursor-pointer"
+          className={
+            store.currentTab == 3
+              ? underlineTabStyle +
+                " pr-8 font-bold text-slate-600 cursor-pointer"
+              : " pr-8 font-bold text-slate-600 cursor-pointer"
+          }
+          onClick={() => sortNextMeEvents()}
+        >
+          Рядом со мной
+        </p>
+
+        <p
+          className="pr-8 font-bold text-slate-600 cursor-pointer"
           onClick={() => shuffleEvents()}
         >
           Перемешать
@@ -286,6 +318,26 @@ const AllEvents = observer(() => {
           shownEvents.map((item: { objectId: number }) => {
             return <CardEvent data={item} key={item.objectId} />;
           })}
+      </div>
+      <div
+        className="fixed bottom-0 left-0 p-4 z-10 cursor-pointer hover:animate-bounce"
+        onClick={() =>
+          window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth",
+          })
+        }
+      >
+        <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
+          <circle cx="35" cy="35" r="35" fill="white" />
+          <path
+            d="M52.5 45L35 25L17.5 45"
+            stroke="#ADADAD"
+            strokeWidth="6"
+            strokeLinecap="round"
+          />
+        </svg>
       </div>
     </>
   );
