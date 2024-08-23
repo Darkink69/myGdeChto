@@ -8,7 +8,7 @@ const AllMap = observer(() => {
   let w =
     window.innerWidth > 1536
       ? window.innerWidth - 420
-      : window.innerWidth - 100;
+      : window.innerWidth - 150;
   let h = "600";
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const AllMap = observer(() => {
   return (
     <>
       <div className="pt-28">
-        <p>{window.innerWidth}</p>
+        {/* <p>{window.innerWidth}</p> */}
         <iframe src={store.sourceCity} width={w} height={h}></iframe>
       </div>
     </>

@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import store from "../store/store";
 import CardEvent from "./CardEvent";
 import AllMap from "./YMaps";
+import AddEvent from "./AddEvent";
 import { useEffect, useState } from "react";
 import { Input } from "antd";
 
@@ -10,20 +11,16 @@ const { Search } = Input;
 const AllEvents = observer(() => {
   const toleranceLat = 0.01;
   const toleranceLong = 0.005;
-  const distanceToMe = 2500;
+  // const distanceToMe = 2500;
 
   const underlineTabStyle =
     " underline decoration-4 underline-offset-8 decoration-sky-500";
   const [events, setEvents] = useState<any>(null);
   const [shownEvents, setshownEvents] = useState<any>(null);
   const [map, setMap] = useState(true);
+  const [resetFilters, setResetFilters] = useState(false);
 
   const jsonFetch = () => {
-    // fetch(
-    //   `https://raw.githubusercontent.com/Darkink69/design_work/main/all_events_now_${
-    //     store.cities[store.currentCity]
-    //   }.json`
-    // )
     fetch(
       `https://gde-chto.ru/elitegis/rest/services/${
         store.cities[store.currentCity]
@@ -31,6 +28,7 @@ const AllEvents = observer(() => {
     )
       .then((response) => response.json())
       .then((data) => setEvents(data.results))
+      // .then(() => getImg())
       .catch((error) => console.error(error));
   };
 
@@ -39,21 +37,36 @@ const AllEvents = observer(() => {
       JSON.parse(localStorage.getItem("removedEvents") || "[]") || [];
 
     let shownEvents: { objectId: string | Number | null }[] = [];
-    events?.map(
-      (item: { attributes: any; objectId: string | Number | null }) => {
-        if (
-          !removedEvents.includes(item.objectId) &&
-          new Date().getTime() - 86400000 <
-            new Date(item.attributes.date_to).getTime()
-        ) {
-          shownEvents.push(item);
-        }
+    events?.map((item: { objectId: Number | null }) => {
+      if (!removedEvents.includes(item.objectId)) {
+        shownEvents.push(item);
       }
-    );
+    });
+    // console.log(events);
     setshownEvents(shownEvents);
     // store.setAllEvents(shownEvents?.length);
+    setResetFilters(false);
     store.setСurrentTab(0);
   };
+
+  // const getImg = (layerId: Number | null, objectId: Number | null) => {
+  //   // let img: any;
+  //   // events.forEach((item: any) => console.log(item));
+  //   // events?.map((item: { layerId: number; objectId: number }) => {
+  //   // console.log(item.objectId);
+  //   fetch(
+  //     `https://gde-chto.ru/elitegis/rest/services/${
+  //       store.cities[store.currentCity]
+  //     }/sights/MapServer/exts/CompositeSoe/GetAttachments?layer=${layerId}&objectId=${objectId}`
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // console.log(data.attachmentInfos[0].id, "IMG!!!");
+  //       return data.attachmentInfos[0].id;
+  //     })
+  //     .catch((error) => console.error(error));
+  //   // });
+  // };
 
   const sortFavorites = () => {
     let shownEvents: { objectId: string | Number | null }[] = [];
@@ -65,6 +78,7 @@ const AllEvents = observer(() => {
     });
     setshownEvents(shownEvents);
     store.setСurrentTab(2);
+    setResetFilters(true);
   };
 
   const shuffleEvents = () => {
@@ -91,20 +105,21 @@ const AllEvents = observer(() => {
     setshownEvents(soonEvents);
     setMap(false);
     store.setСurrentTab(1);
+    setResetFilters(true);
   };
 
-  const sortNextMeEvents = () => {
-    let nextToMeEvents: { objectId: string | Number | null }[] = [];
-    shownEvents.map((item: any) => {
-      if (item.distanceInMeters < distanceToMe) {
-        nextToMeEvents.push(item);
-      }
-    });
+  // const sortNextMeEvents = () => {
+  //   let nextToMeEvents: { objectId: string | Number | null }[] = [];
+  //   shownEvents.map((item: any) => {
+  //     if (item.distanceInMeters < distanceToMe) {
+  //       nextToMeEvents.push(item);
+  //     }
+  //   });
 
-    setshownEvents(nextToMeEvents);
-    setMap(false);
-    store.setСurrentTab(3);
-  };
+  //   setshownEvents(nextToMeEvents);
+  //   setMap(false);
+  //   store.setСurrentTab(3);
+  // };
 
   const onSearch = (value: string, _e: any) => {
     console.log(value);
@@ -148,6 +163,7 @@ const AllEvents = observer(() => {
     // setShowTracks(resultSearch.length);
     setshownEvents(searchedEvents);
     store.setСurrentTab(99);
+    setResetFilters(true);
   };
 
   const useMap = () => {
@@ -156,6 +172,8 @@ const AllEvents = observer(() => {
 
   useEffect(() => {
     jsonFetch();
+    // getImg();
+    // console.log(events);
     sortEvents();
     store.checkEvents();
     document.title = `ГдеЧто. ${store.titleCities[store.currentCity]}`;
@@ -178,6 +196,7 @@ const AllEvents = observer(() => {
     );
     setshownEvents(dateEvents);
     setMap(false);
+    // console.log(shownEvents[0]);
   }, [store.dataFilter]);
 
   useEffect(() => {
@@ -211,8 +230,13 @@ const AllEvents = observer(() => {
     setshownEvents(typeEvents);
   }, [store.currentType]);
 
+  // useEffect(() => {
+  //   setAddEvent(!true);
+  // }, [store.addEventView]);
+
   return (
     <>
+      {store.addEventView && <AddEvent />}
       {map && <AllMap />}
 
       <div
@@ -251,7 +275,7 @@ const AllEvents = observer(() => {
           Скоро!
         </p>
 
-        <p
+        {/* <p
           className={
             store.currentTab == 3
               ? underlineTabStyle +
@@ -261,7 +285,7 @@ const AllEvents = observer(() => {
           onClick={() => sortNextMeEvents()}
         >
           Рядом со мной
-        </p>
+        </p> */}
 
         <p
           className="pr-8 font-bold text-slate-600 cursor-pointer"
@@ -299,8 +323,15 @@ const AllEvents = observer(() => {
           // allowClear={true}
         />
 
-        {/* <p className="pr-4 font-bold text-slate-600">Рекомендации</p>
-        <p className="pr-4 font-bold text-slate-600">Прошедшие</p> */}
+        {resetFilters && (
+          <div onClick={() => sortEvents()}>
+            <p className="pl-4 font-bold text-red-600 cursor-pointer">
+              Сбросить фильтры
+            </p>
+          </div>
+        )}
+
+        {/* <p className="pr-4 font-bold text-slate-600">Прошедшие</p> */}
 
         {/* <button className="transition ease-in-out delay-100 bg-teal-600 hover:bg-sky-700 font-bold text-white h-10 w-48 rounded-md absolute right-0">
           Добавить событие
@@ -315,7 +346,7 @@ const AllEvents = observer(() => {
 
       <div className="grid items-start sm:grid-cols-3 grid-cols-1 2xl:grid-cols-4 gap-4 pt-8">
         {shownEvents &&
-          shownEvents.map((item: { objectId: number }) => {
+          shownEvents.map((item: { layerId: any; objectId: number }) => {
             return <CardEvent data={item} key={item.objectId} />;
           })}
       </div>
@@ -329,7 +360,7 @@ const AllEvents = observer(() => {
           })
         }
       >
-        <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
+        <svg width="50" height="50" viewBox="0 0 70 70" fill="none">
           <circle cx="35" cy="35" r="35" fill="white" />
           <path
             d="M52.5 45L35 25L17.5 45"

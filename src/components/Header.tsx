@@ -23,6 +23,16 @@ const Header = observer(() => {
     // console.log(store.currentCity);
   };
 
+  const getAddEvent = () => {
+    store.setEventView(true);
+    setMenu(store.menuView);
+  };
+
+  useEffect(() => {
+    // setMenu(store.menuView);
+    setMenu(false);
+  }, [store.menuView]);
+
   useEffect(() => {
     setViewCities(false);
   }, [store.currentCity]);
@@ -127,7 +137,10 @@ const Header = observer(() => {
             </svg>
           </div>
 
-          <div className="transition ease-in-out delay-100 absolute hidden xl:block 2xl:mr-72 xl:mr-32 mr-4 right-0 text-xl text-white hover:text-sky-700 border-2 hover:border-white hover:bg-white rounded-lg border-white p-2 pr-8 pl-8 cursor-pointer ">
+          <div
+            onClick={() => getAddEvent()}
+            className="transition ease-in-out delay-100 absolute hidden xl:block 2xl:mr-72 xl:mr-32 mr-4 right-0 text-xl text-white hover:text-sky-700 border-2 hover:border-white hover:bg-white rounded-lg border-white p-2 pr-8 pl-8 cursor-pointer "
+          >
             Добавить мероприятие
           </div>
 
@@ -169,7 +182,9 @@ const Header = observer(() => {
       </div>
       <div
         className={
-          viewCities ? "fixed z-40 w-full h-[370px] bg-emerald-800" : "hidden"
+          viewCities
+            ? "fixed z-40 w-full md:h-[370px] h-[500px] bg-emerald-800"
+            : "hidden"
         }
       >
         <MenuCities />

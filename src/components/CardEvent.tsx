@@ -5,9 +5,37 @@ import { Image } from "antd";
 
 const CardEvent = observer(({ data }: any) => {
   const [img, setImg] = useState(null);
+  const [description, setDescription] = useState("");
+
+  // let im;
+  const waitGifs = [
+    "https://cs4.pikabu.ru/post_img/2014/10/26/11/1414342825_975442758.jpg",
+    // "https://media1.tenor.com/m/d23-C-mR704AAAAC/shvurlo-%D0%B6%D0%B4%D1%83.gif",
+    // "https://images.squarespace-cdn.com/content/v1/5bb039b60490792e51c69930/1580611723040-VT133WFQRDI3Y2AUTK2B/giphy+%281%29.gif",
+    // "https://i.pinimg.com/originals/44/5f/1a/445f1ab89041d998d9fa937ad7f9efa3.gif",
+    // "https://gifdb.com/images/featured/waiting-ixdcqr5r6rgskuen.gif",
+    // "https://64.media.tumblr.com/78842e06949159e3d28a527c25fb99d8/386a5022a82088aa-ad/s640x960/14e90205367dddfb371954c384dbd16a42395ee4.gif",
+    // "https://i.gifer.com/WZ3W.gif",
+    // "https://i.gifer.com/4qb.gif",
+    // "https://i.gifer.com/origin/20/201d3ea5b1e9cac8d049886977bffe3c_w200.gif",
+    // "https://99px.ru/sstorage/86/2016/10/image_862010162150152465627.gif",
+    // "https://media.tenor.com/Y7ShQ_3hnn8AAAAM/me-waiting-for-my-friends-to-get-online.gif",
+    // "https://gde-chto.ru/catalog/css/Gallery-master/img/loading.gif",
+  ];
+  let rndGif = Math.floor(Math.random() * waitGifs.length);
+
   const styleDateEl =
     "relative inline-block font-bold cursor-pointer before:block before:absolute before:-inset-1 ";
 
+  const days = [
+    "ВОСКРЕСЕНИЕ",
+    "ПОНЕДЕЛЬНИК",
+    "ВТОРНИК",
+    "СРЕДА",
+    "ЧЕТВЕРГ",
+    "ПЯТНИЦА",
+    "СУББОТА",
+  ];
   const [visibleEl, setVisibleEl] = useState("hidden");
   const [fav, setFav] = useState(false);
   // const [visibleTooltip, setVisibleTooltip] = useState("hidden");
@@ -18,13 +46,25 @@ const CardEvent = observer(({ data }: any) => {
   const [dateText, setDateText] = useState(data.attributes.text_date);
 
   const getImg = () => {
+    // fetch(
+    //   `https://gde-chto.ru/elitegis/rest/services/${
+    //     store.cities[store.currentCity]
+    //   }/sights/MapServer/102/1931/attachments/`
+    // )
     fetch(
       `https://gde-chto.ru/elitegis/rest/services/${
         store.cities[store.currentCity]
-      }/sights/MapServer/${data.layerId}/${data.objectId}/attachments/`
+      }/sights/MapServer/exts/CompositeSoe/GetAttachments?layer=${
+        data.layerId
+      }&objectId=${data.objectId}`
     )
       .then((response) => response.json())
-      .then((data) => setImg(data.attachmentInfos[1].id))
+      .then((data) => {
+        // im = data.attachmentInfos[0].id;
+        setImg(data.attachmentInfos[0].id);
+        // return data.attachmentInfos[0].id;
+        // console.log(data.attachmentInfos[0].id);
+      })
       .catch((error) => console.error(error));
   };
 
@@ -45,14 +85,76 @@ const CardEvent = observer(({ data }: any) => {
     }
   };
 
+  const setHyperlinks = () => {
+    // const wordsLinks = ["https://", "vk.cc", "http://"];
+
+    // const descFieilds = [data.attributes.description];
+    // const field = data.attributes.description + " " + data.attributes.note;
+    const field = data.attributes.description;
+
+    setDescription(field);
+
+    // function getListIdx(str: string | any[], substr: string) {
+    //   let listIdx = [];
+    //   let lastIndex = -1;
+    //   while ((lastIndex = str.indexOf(substr, lastIndex + 1)) !== -1) {
+    //     listIdx.push(lastIndex);
+    //   }
+    //   return listIdx;
+    // }
+    // getListIdx("abc bca abcabc cba", "abc"); // [ 0, 8, 11 ]
+
+    // descFieilds.map((field) => {
+    //   console.log(typeof field);
+
+    // });
+    if (field !== null) {
+      let newDesc = field.split("\n").join(" ");
+
+      // const inIndex = getListIdx(newDesc, "https://");
+      // console.log(inIndex, "list indx!!");
+
+      const inIndex = newDesc.indexOf("https://");
+
+      let lnk = "";
+      if (inIndex !== -1) {
+        const outIndex = newDesc.indexOf(" ", inIndex);
+        outIndex === -1
+          ? (lnk = newDesc.slice(inIndex))
+          : (lnk = newDesc.slice(inIndex, outIndex));
+
+        const swiftInsert = (
+          original: string,
+          index: number,
+          insert: string,
+          outIndex: number
+        ) =>
+          original.substring(0, index) + insert + original.substring(outIndex);
+
+        setDescription(
+          swiftInsert(
+            newDesc,
+            inIndex,
+            `<a style="color: #3D71B0" href="${lnk}" target="_blank">${lnk} </a>`,
+            outIndex
+          )
+        );
+      }
+    }
+  };
+
   const getFullCard = () => {
     console.log(data.objectId);
     visibleEl == "hidden" ? setVisibleEl("") : setVisibleEl("hidden");
+    setHyperlinks();
   };
 
   const getTooltip = (num: number) => {
     setTooltip(num);
+    const day = new Date(data.attributes.date_to);
+    setDateText(days[day.getDay()]);
     setTimeout(() => {
+      setDateText(dateText);
       setTooltip(0);
     }, 1000);
   };
@@ -160,30 +262,68 @@ const CardEvent = observer(({ data }: any) => {
         <p className="text-sm sm:text-base pt-1">{data.attributes.text_time}</p>
         {/* <p>{data.objectId}</p> */}
         {/* <p>{data.attributes.approve}</p> */}
-        <p className="text-xs">
-          {data.distanceInMeters} метров до меня, это для теста
-        </p>
+        {/* <p>{data.objectId}</p>
+        <p>{img}</p> */}
+        {/* <p className="text-xs">
+          {data.distanceInMeters}
+        </p> */}
 
-        <img
+        <div
           className={
             visibleEl === "hidden"
-              ? "cursor-pointer sm:pt-4 pt-1 sm:pb-4 pb-0 hover:drop-shadow-lg"
+              ? "cursor-pointer sm:pt-4 pt-1 sm:pb-4 pb-0 hover:drop-shadow-lg relative"
               : "hidden"
           }
-          // src={data.attributes.img}
-          src={
-            img
-              ? `https://gde-chto.ru/elitegis/rest/services/${
-                  store.cities[store.currentCity]
-                }/sights/MapServer/${data.layerId}/${
-                  data.objectId
-                }/attachments/${img}`
-              : "https://images.squarespace-cdn.com/content/v1/5bb039b60490792e51c69930/1580611723040-VT133WFQRDI3Y2AUTK2B/giphy+%281%29.gif"
-          }
-          alt=""
-          onClick={() => getFullCard()}
-          // onClick={() => getImg()}
-        />
+        >
+          <svg
+            className="absolute z-10 top-0 opacity-50 hover:opacity-100"
+            onClick={() => getFullCard()}
+            width="300"
+            height="300"
+            viewBox="0 0 300 300"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g opacity="0.75">
+              <circle cx="150.5" cy="150.5" r="71.5" fill="#D9D9D9" />
+              <path
+                d="M118.264 156V149.748H115.357V156H112.826V147.598H120.795V156H118.264ZM130.439 151.775C130.439 152.619 130.258 153.375 129.895 154.043C129.531 154.707 129.023 155.225 128.371 155.596C127.719 155.963 126.988 156.146 126.18 156.146C125.391 156.146 124.672 155.969 124.023 155.613C123.379 155.254 122.877 154.752 122.518 154.107C122.158 153.459 121.979 152.727 121.979 151.91C121.979 151.055 122.16 150.285 122.523 149.602C122.887 148.918 123.396 148.391 124.053 148.02C124.709 147.645 125.455 147.457 126.291 147.457C127.096 147.457 127.814 147.637 128.447 147.996C129.084 148.352 129.574 148.861 129.918 149.525C130.266 150.186 130.439 150.936 130.439 151.775ZM127.756 151.846C127.756 151.154 127.623 150.609 127.357 150.211C127.092 149.812 126.729 149.613 126.268 149.613C125.764 149.613 125.371 149.805 125.09 150.188C124.809 150.57 124.668 151.111 124.668 151.811C124.668 152.494 124.807 153.027 125.084 153.41C125.365 153.793 125.746 153.984 126.227 153.984C126.52 153.984 126.783 153.898 127.018 153.727C127.252 153.555 127.434 153.309 127.562 152.988C127.691 152.668 127.756 152.287 127.756 151.846ZM137.91 158.355V156H133.123V158.355H130.896V153.984H131.729C132.736 152.199 133.291 150.07 133.393 147.598H138.889V153.984H140.189V158.355H137.91ZM136.357 149.654H135.414C135.297 151.084 134.912 152.527 134.26 153.984H136.357V149.654ZM148.182 150.369C148.182 150.943 148.035 151.453 147.742 151.898C147.453 152.344 147.039 152.689 146.5 152.936C145.961 153.178 145.334 153.299 144.619 153.299H143.846V156H141.314V147.598H144.76C145.943 147.598 146.809 147.822 147.355 148.271C147.906 148.721 148.182 149.42 148.182 150.369ZM145.504 150.457C145.504 150.113 145.404 149.854 145.205 149.678C145.006 149.502 144.713 149.414 144.326 149.414H143.846V151.488H144.414C145.141 151.488 145.504 151.145 145.504 150.457ZM157.182 151.775C157.182 152.619 157 153.375 156.637 154.043C156.273 154.707 155.766 155.225 155.113 155.596C154.461 155.963 153.73 156.146 152.922 156.146C152.133 156.146 151.414 155.969 150.766 155.613C150.121 155.254 149.619 154.752 149.26 154.107C148.9 153.459 148.721 152.727 148.721 151.91C148.721 151.055 148.902 150.285 149.266 149.602C149.629 148.918 150.139 148.391 150.795 148.02C151.451 147.645 152.197 147.457 153.033 147.457C153.838 147.457 154.557 147.637 155.189 147.996C155.826 148.352 156.316 148.861 156.66 149.525C157.008 150.186 157.182 150.936 157.182 151.775ZM154.498 151.846C154.498 151.154 154.365 150.609 154.1 150.211C153.834 149.812 153.471 149.613 153.01 149.613C152.506 149.613 152.113 149.805 151.832 150.188C151.551 150.57 151.41 151.111 151.41 151.811C151.41 152.494 151.549 153.027 151.826 153.41C152.107 153.793 152.488 153.984 152.969 153.984C153.262 153.984 153.525 153.898 153.76 153.727C153.994 153.555 154.176 153.309 154.305 152.988C154.434 152.668 154.498 152.287 154.498 151.846ZM165.555 153.229C165.555 154.115 165.283 154.799 164.74 155.279C164.197 155.76 163.412 156 162.385 156H158.377V147.598H164.465V149.578H160.908V150.879H162.689C163.311 150.879 163.834 150.977 164.26 151.172C164.689 151.367 165.012 151.641 165.227 151.992C165.445 152.344 165.555 152.756 165.555 153.229ZM162.865 153.41C162.865 153.156 162.787 152.955 162.631 152.807C162.475 152.654 162.258 152.578 161.98 152.578H160.908V154.295H161.869C162.186 154.295 162.43 154.221 162.602 154.072C162.777 153.92 162.865 153.699 162.865 153.41ZM172.111 156V152.865H169.205V156H166.674V147.598H169.205V150.709H172.111V147.598H174.643V156H172.111ZM176.318 156V147.598H181.551V149.578H178.85V150.803H181.387V152.783H178.85V154.02H181.744V156H176.318ZM182.939 156V147.598H188.172V149.578H185.471V150.803H188.008V152.783H185.471V154.02H188.365V156H182.939Z"
+                fill="black"
+              />
+            </g>
+          </svg>
+
+          <img
+            // src="https://sun4-18.userapi.com/impg/CczDilyLD0wR09MhcxOJu-0Rmp01vB4bTE5KeA/dGsBmaa2L24.jpg?size=1620x2160&quality=95&sign=3b2b9c3c58905215471b3f21a8a810bf&type=album"
+            // src={`https://gde-chto.ru/elitegis/rest/services/${
+            //   store.cities[store.currentCity]
+            // }/sights/MapServer/102/1931/attachments/${im}`}
+            // src={
+            //   img
+            //     ? `https://gde-chto.ru/elitegis/rest/services/${
+            //         store.cities[store.currentCity]
+            //       }/sights/MapServer/102/1931/attachments/${img}`
+            //     : waitGifs[rndGif]
+            // }
+            src={
+              img
+                ? `https://gde-chto.ru/elitegis/rest/services/${
+                    store.cities[store.currentCity]
+                  }/sights/MapServer/${data.layerId}/${
+                    data.objectId
+                  }/attachments/${img}`
+                : // : `https://gde-chto.ru/elitegis/rest/services/${
+                  //     store.cities[store.currentCity]
+                  //   }/sights/MapServer/${data.layerId}/${
+                  //     data.objectId
+                  //   }/attachments/${im}`
+                  waitGifs[rndGif]
+            }
+            alt=""
+            onClick={() => getFullCard()}
+            // onClick={() => getImg()}
+          />
+        </div>
 
         <Image
           className={visibleEl + " pt-4 pb-4 w-full"}
@@ -194,12 +334,17 @@ const CardEvent = observer(({ data }: any) => {
             data.objectId
           }/attachments/${img}`}
         />
-        <p className={visibleEl + " text-xs sm:text-sm"}>
-          {data.attributes.description}
-        </p>
+
+        <div
+          dangerouslySetInnerHTML={{ __html: description }}
+          className={visibleEl + " text-xs sm:text-sm"}
+        ></div>
+        {/* {description} */}
+
         <p className={visibleEl + " text-xs sm:text-sm"}>
           {data.attributes.note}
         </p>
+
         <p className={visibleEl + " pt-2"}>{data.attributes.phone}</p>
         <a className={visibleEl} href={data.attributes.site} target="_blank">
           <p className="pb-2 text-sky-700">{data.attributes.site}</p>

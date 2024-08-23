@@ -37,6 +37,8 @@ class Store {
   requestSearch = "";
   eventLat = 0.0;
   eventLong = 0.0;
+  menuView = false;
+  addEventView = false;
 
   x = "83.06831359863283";
   y = "54.93227079942556";
@@ -51,6 +53,14 @@ class Store {
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setMenuView(menuView: any) {
+    this.menuView = menuView;
+  }
+
+  setEventView(addEventView: any) {
+    this.addEventView = addEventView;
   }
 
   setCurentCity(currentCity: any) {
