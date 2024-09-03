@@ -11,14 +11,21 @@ const { Search } = Input;
 const AllEvents = observer(() => {
   const toleranceLat = 0.01;
   const toleranceLong = 0.005;
-  // const distanceToMe = 2500;
 
   const underlineTabStyle =
     " underline decoration-4 underline-offset-8 decoration-sky-500";
+
+  const styleFilter =
+    " cursor-pointer hover:scale-95 pr-4 pl-4 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-gray-200 border-2";
   const [events, setEvents] = useState<any>(null);
   const [shownEvents, setshownEvents] = useState<any>(null);
-  const [map, setMap] = useState(true);
+  // const [map, setMap] = useState(true);
   const [resetFilters, setResetFilters] = useState(false);
+  const [filters, setFilters] = useState(false);
+  const [typesFilters, setTypesFilters] = useState([0]);
+  // const [styleFilter, setStyleFilter] = useState(
+  //   " cursor-pointer hover:scale-95 pr-4 pl-4 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-gray-200 border-2"
+  // );
 
   const jsonFetch = () => {
     fetch(
@@ -45,6 +52,8 @@ const AllEvents = observer(() => {
     // console.log(events);
     setshownEvents(shownEvents);
     // store.setAllEvents(shownEvents?.length);
+    setFilters(false);
+    setTypesFilters([0]);
     setResetFilters(false);
     store.setСurrentTab(0);
   };
@@ -81,6 +90,35 @@ const AllEvents = observer(() => {
     setResetFilters(true);
   };
 
+  const filterEvents = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+    // setMap(false);
+    setFilters(true);
+    store.setСurrentTab(3);
+    setResetFilters(true);
+    console.log("filtered!");
+  };
+
+  const useFilterEvents = (typeEvent: number) => {
+    let currentFilters = [];
+    currentFilters.push(...typesFilters);
+    if (!currentFilters.includes(typeEvent)) {
+      currentFilters.push(typeEvent);
+      // setStyleFilter("hidden");
+      setTypesFilters(currentFilters);
+    } else {
+      const delArray = currentFilters.filter((number) => number !== typeEvent);
+      setTypesFilters(delArray);
+    }
+
+    // console.log("use!", typeEvent);
+    // console.log(typesFilters);
+  };
+
   const shuffleEvents = () => {
     setEvents(shownEvents.sort(() => Math.random() - 0.5));
   };
@@ -103,23 +141,11 @@ const AllEvents = observer(() => {
     });
 
     setshownEvents(soonEvents);
-    setMap(false);
+    // setMap(false);
     store.setСurrentTab(1);
+    setFilters(false);
     setResetFilters(true);
   };
-
-  // const sortNextMeEvents = () => {
-  //   let nextToMeEvents: { objectId: string | Number | null }[] = [];
-  //   shownEvents.map((item: any) => {
-  //     if (item.distanceInMeters < distanceToMe) {
-  //       nextToMeEvents.push(item);
-  //     }
-  //   });
-
-  //   setshownEvents(nextToMeEvents);
-  //   setMap(false);
-  //   store.setСurrentTab(3);
-  // };
 
   const onSearch = (value: string, _e: any) => {
     console.log(value);
@@ -140,40 +166,19 @@ const AllEvents = observer(() => {
         }
       }
     });
-    // if (value.length === 0) {
-    //   console.log(value.length, "!!");
-    //   setTrackData(station.jsonData);
-    //   setShowTracks(50);
-    //   setIsLoaded(true);
-    // }
-    // const resultSearch = [];
-    // const wordsSearch = value.toLowerCase().split(" ");
-    // // console.log(wordsSearch);
-    // trackData.map((item) => {
-    //   const wordsTrack = item.title.toLowerCase().split(" ");
-    //   const filteredArray = wordsSearch.filter((val) =>
-    //     wordsTrack.includes(val)
-    //   );
-    //   if (filteredArray.length !== 0) {
-    //     console.log(item.title);
-    //     resultSearch.push(item);
-    //   }
-    // });
-    // setTrackData(resultSearch);
-    // setShowTracks(resultSearch.length);
+
     setshownEvents(searchedEvents);
     store.setСurrentTab(99);
     setResetFilters(true);
   };
 
-  const useMap = () => {
-    map ? setMap(false) : setMap(true);
-  };
+  // const useMap = () => {
+  //   map ? setMap(false) : setMap(true);
+  // };
 
   useEffect(() => {
     jsonFetch();
-    // getImg();
-    // console.log(events);
+
     sortEvents();
     store.checkEvents();
     document.title = `ГдеЧто. ${store.titleCities[store.currentCity]}`;
@@ -195,7 +200,7 @@ const AllEvents = observer(() => {
       }
     );
     setshownEvents(dateEvents);
-    setMap(false);
+    // setMap(false);
     // console.log(shownEvents[0]);
   }, [store.dataFilter]);
 
@@ -212,8 +217,8 @@ const AllEvents = observer(() => {
       }
     );
     setshownEvents(coordEvents);
-    setMap(false);
-    setMap(true);
+    // setMap(false);
+    // setMap(true);
     console.log(store.x);
   }, [store.x, store.y]);
 
@@ -230,146 +235,309 @@ const AllEvents = observer(() => {
     setshownEvents(typeEvents);
   }, [store.currentType]);
 
+  useEffect(() => {
+    let typeEvents: { attributes: any; objectId: string | Number | null }[] =
+      [];
+    events?.map(
+      (item: { attributes: any; objectId: string | Number | null }) => {
+        if (!typesFilters.includes(item.attributes.type)) {
+          typeEvents.push(item);
+        }
+      }
+    );
+    setshownEvents(typeEvents);
+  }, [typesFilters]);
+
   // useEffect(() => {
-  //   setAddEvent(!true);
-  // }, [store.addEventView]);
+  //   shownEvents(false);
+  // }, []);
 
   return (
     <>
+      {store.mapView && <AllMap />}
       {store.addEventView && <AddEvent />}
-      {map && <AllMap />}
 
-      <div
-        className={
-          map
-            ? "pt-8 flex items-center relative"
-            : "pt-32 md:flex md:items-center relative"
-        }
-      >
-        <h1
-          className={
-            store.currentTab == 0
-              ? underlineTabStyle +
-                " pr-2 cursor-pointer text-slate-600 font-bold "
-              : " pr-2 cursor-pointer text-slate-600 font-bold"
-          }
-          onClick={() => sortEvents()}
-        >
-          Все мероприятия
-        </h1>
-        <span
-          className="p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-slate-400 cursor-pointer"
-          onClick={() => sortEvents()}
-        >
-          {store.allEvents}
-        </span>
-        <p
-          className={
-            store.currentTab == 1
-              ? underlineTabStyle +
-                " pl-8 pr-8 font-bold text-slate-600 cursor-pointer"
-              : " pl-8 pr-8 font-bold text-slate-600 cursor-pointer"
-          }
-          onClick={() => sortSoonEvents()}
-        >
-          Скоро!
-        </p>
-
-        {/* <p
-          className={
-            store.currentTab == 3
-              ? underlineTabStyle +
-                " pr-8 font-bold text-slate-600 cursor-pointer"
-              : " pr-8 font-bold text-slate-600 cursor-pointer"
-          }
-          onClick={() => sortNextMeEvents()}
-        >
-          Рядом со мной
-        </p> */}
-
-        <p
-          className="pr-8 font-bold text-slate-600 cursor-pointer"
-          onClick={() => shuffleEvents()}
-        >
-          Перемешать
-        </p>
-
-        <p
-          className={
-            store.currentTab == 2
-              ? underlineTabStyle +
-                " pr-2 font-bold text-slate-600 cursor-pointer"
-              : " pr-2 font-bold text-slate-600 cursor-pointer"
-          }
-          onClick={() => sortFavorites()}
-        >
-          Избранные
-        </p>
-
-        {store.favoriteEvents.length && (
-          <span
-            className="p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-sky-400 cursor-pointer"
-            onClick={() => sortFavorites()}
+      {store.cardsEventsView && (
+        <div>
+          <div
+            className={
+              store.mapView
+                ? "pt-8 flex items-center relative"
+                : "pt-32 md:flex md:items-center relative"
+            }
           >
-            {store.favoriteEvents.length}
-          </span>
-        )}
+            <h1
+              className={
+                store.currentTab == 0
+                  ? underlineTabStyle +
+                    " pr-2 cursor-pointer text-slate-600 font-bold "
+                  : " pr-2 cursor-pointer text-slate-600 font-bold"
+              }
+              onClick={() => sortEvents()}
+            >
+              Все мероприятия
+            </h1>
+            <span
+              className="p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-slate-400 cursor-pointer"
+              onClick={() => sortEvents()}
+            >
+              {store.allEvents}
+            </span>
+            <p
+              className={
+                store.currentTab == 1
+                  ? underlineTabStyle +
+                    " pl-8 pr-8 font-bold text-slate-600 cursor-pointer"
+                  : " pl-8 pr-8 font-bold text-slate-600 cursor-pointer"
+              }
+              onClick={() => sortSoonEvents()}
+            >
+              Скоро!
+            </p>
 
-        <Search
-          className="pl-8"
-          placeholder="Поиск событий"
-          onSearch={onSearch}
-          style={{ width: 200 }}
-          // allowClear={true}
-        />
+            <div>
+              <p
+                className={
+                  store.currentTab == 3
+                    ? underlineTabStyle +
+                      " pr-8 font-bold text-slate-600 cursor-pointer"
+                    : " pr-8 font-bold text-slate-600 cursor-pointer"
+                }
+                onClick={() => filterEvents()}
+              >
+                Что ищем?
+              </p>
+            </div>
 
-        {resetFilters && (
-          <div onClick={() => sortEvents()}>
-            <p className="pl-4 font-bold text-red-600 cursor-pointer">
-              Сбросить фильтры
+            <p
+              className="pr-8 font-bold text-slate-600 cursor-pointer"
+              onClick={() => shuffleEvents()}
+            >
+              Перемешать
+            </p>
+
+            <p
+              className={
+                store.currentTab == 2
+                  ? underlineTabStyle +
+                    " pr-2 font-bold text-slate-600 cursor-pointer"
+                  : " pr-2 font-bold text-slate-600 cursor-pointer"
+              }
+              onClick={() => sortFavorites()}
+            >
+              Избранные
+            </p>
+
+            {store.favoriteEvents.length && (
+              <span
+                className="p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-sky-400 cursor-pointer"
+                onClick={() => sortFavorites()}
+              >
+                {store.favoriteEvents.length}
+              </span>
+            )}
+
+            <Search
+              className="pl-8 pr-8"
+              placeholder="Поиск событий"
+              onSearch={onSearch}
+              style={{ width: 200 }}
+              // allowClear={true}
+            />
+
+            {/* <p className="pr-4 font-bold text-slate-600">Прошедшие</p> */}
+
+            <p
+              className="pl-4 pr-4 font-bold text-sky-400 cursor-pointer absolute right-0"
+              onClick={() => store.setMapView(store.mapView ? false : true)}
+            >
+              {store.mapView ? "Скрыть карту" : "Показать карту"}
             </p>
           </div>
-        )}
 
-        {/* <p className="pr-4 font-bold text-slate-600">Прошедшие</p> */}
+          {filters ? (
+            // <div className="pt-4 grid grid-rows-2 grid-cols-6 2xl:grid-flow-col 2xl:grid-rows-1 auto-cols-max gap-2">
+            <div className="pt-4 flex gap-1 flex-wrap">
+              <p
+                onClick={() => useFilterEvents(1)}
+                className={
+                  typesFilters.includes(1)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#7777F7] bg-[#7777F7]"
+                }
+              >
+                Музыка
+              </p>
+              <p
+                onClick={() => useFilterEvents(2)}
+                className={
+                  typesFilters.includes(2)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#507077] bg-[#507077]"
+                }
+              >
+                Выставки
+              </p>
+              <p
+                onClick={() => useFilterEvents(3)}
+                className={
+                  typesFilters.includes(3)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#B74890] bg-[#B74890]"
+                }
+              >
+                Праздники
+              </p>
+              <p
+                onClick={() => useFilterEvents(4)}
+                className={
+                  typesFilters.includes(4)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#8CC63F] bg-[#8CC63F]"
+                }
+              >
+                Дети
+              </p>
+              <p
+                onClick={() => useFilterEvents(5)}
+                className={
+                  typesFilters.includes(5)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#FC5454] bg-[#FC5454]"
+                }
+              >
+                Спорт
+              </p>
+              <p
+                onClick={() => useFilterEvents(6)}
+                className={
+                  typesFilters.includes(6)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#80CCFF] bg-[#80CCFF]"
+                }
+              >
+                Курсы
+              </p>
+              <p
+                onClick={() => useFilterEvents(7)}
+                className={
+                  typesFilters.includes(7)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#58AAAB] bg-[#58AAAB]"
+                }
+              >
+                Танцы
+              </p>
+              <p
+                onClick={() => useFilterEvents(8)}
+                className={
+                  typesFilters.includes(8)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#FBB03B] bg-[#FBB03B]"
+                }
+              >
+                Еда
+              </p>
+              <p
+                onClick={() => useFilterEvents(9)}
+                className={
+                  typesFilters.includes(9)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#FF6B57] bg-[#FF6B57]"
+                }
+              >
+                Игры
+              </p>
+              <p
+                onClick={() => useFilterEvents(10)}
+                className={
+                  typesFilters.includes(10)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#7D6793] bg-[#7D6793]"
+                }
+              >
+                Ярмарки
+              </p>
+              <p
+                onClick={() => useFilterEvents(12)}
+                className={
+                  typesFilters.includes(12)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#2ECC71] bg-[#2ECC71]"
+                }
+              >
+                Экскурсии
+              </p>
+              <p
+                onClick={() => useFilterEvents(13)}
+                className={
+                  typesFilters.includes(13)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#157764] bg-[#157764]"
+                }
+              >
+                Театр Кино
+              </p>
+              <p
+                onClick={() => useFilterEvents(14)}
+                className={
+                  typesFilters.includes(14)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#FF978F] bg-[#FF978F]"
+                }
+              >
+                Тренировки
+              </p>
+              <p
+                onClick={() => useFilterEvents(15)}
+                className={
+                  typesFilters.includes(15)
+                    ? styleFilter + "border-gray-300 border-2"
+                    : styleFilter + "border-[#F458F9] bg-[#F458F9]"
+                }
+              >
+                Вечеринки
+              </p>
+              {resetFilters && (
+                <div onClick={() => sortEvents()}>
+                  <p className="pl-4 pr-4 pt-1 pb-1 rounded-full inline-block relative border-2 border-red-600 font-bold text-xs text-red-600 hover:bg-red-600 hover:text-white cursor-pointer">
+                    Сбросить
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : (
+            ""
+          )}
 
-        {/* <button className="transition ease-in-out delay-100 bg-teal-600 hover:bg-sky-700 font-bold text-white h-10 w-48 rounded-md absolute right-0">
-          Добавить событие
-        </button> */}
-        <p
-          className="pl-4 pr-4 font-bold text-sky-400 cursor-pointer absolute right-0"
-          onClick={() => useMap()}
-        >
-          {map ? "Скрыть карту" : "Показать карту"}
-        </p>
-      </div>
-
-      <div className="grid items-start sm:grid-cols-3 grid-cols-1 2xl:grid-cols-4 gap-4 pt-8">
-        {shownEvents &&
-          shownEvents.map((item: { layerId: any; objectId: number }) => {
-            return <CardEvent data={item} key={item.objectId} />;
-          })}
-      </div>
-      <div
-        className="fixed bottom-0 left-0 p-4 z-10 cursor-pointer hover:animate-bounce"
-        onClick={() =>
-          window.scrollTo({
-            top: 0,
-            left: 0,
-            behavior: "smooth",
-          })
-        }
-      >
-        <svg width="50" height="50" viewBox="0 0 70 70" fill="none">
-          <circle cx="35" cy="35" r="35" fill="white" />
-          <path
-            d="M52.5 45L35 25L17.5 45"
-            stroke="#ADADAD"
-            strokeWidth="6"
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
+          <div className="grid items-start sm:grid-cols-3 grid-cols-1 2xl:grid-cols-4 gap-4 pt-8">
+            {shownEvents &&
+              shownEvents.map((item: { layerId: any; objectId: number }) => {
+                return <CardEvent data={item} key={item.objectId} />;
+              })}
+          </div>
+          <div
+            className="fixed bottom-0 left-0 p-4 z-10 cursor-pointer hover:animate-bounce"
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "smooth",
+              })
+            }
+          >
+            <svg width="50" height="50" viewBox="0 0 70 70" fill="none">
+              <circle cx="35" cy="35" r="35" fill="white" />
+              <path
+                d="M52.5 45L35 25L17.5 45"
+                stroke="#ADADAD"
+                strokeWidth="6"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+        </div>
+      )}
     </>
   );
 });

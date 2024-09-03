@@ -38,7 +38,9 @@ class Store {
   eventLat = 0.0;
   eventLong = 0.0;
   menuView = false;
+  mapView = true;
   addEventView = false;
+  cardsEventsView = true;
 
   x = "83.06831359863283";
   y = "54.93227079942556";
@@ -53,6 +55,14 @@ class Store {
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setMapView(mapView: boolean) {
+    this.mapView = mapView;
+  }
+
+  setCardsEventsView(cardsEventsView: any) {
+    this.cardsEventsView = cardsEventsView;
   }
 
   setMenuView(menuView: any) {

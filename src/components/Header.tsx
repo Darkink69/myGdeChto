@@ -26,6 +26,7 @@ const Header = observer(() => {
   const getAddEvent = () => {
     store.setEventView(true);
     setMenu(store.menuView);
+    store.setCardsEventsView(false);
   };
 
   useEffect(() => {

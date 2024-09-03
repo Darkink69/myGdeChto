@@ -6,6 +6,7 @@ const Menu = observer(() => {
   const getAddEvent = () => {
     store.setEventView(true);
     store.setMenuView(true);
+    store.setCardsEventsView(false);
   };
 
   useEffect(() => {}, []);
@@ -15,11 +16,11 @@ const Menu = observer(() => {
       <div className="flex items-center flex-col pt-40 text-sm sm:text-2xl text-white font-bold p-20">
         <div
           onClick={() => getAddEvent()}
-          className="transition ease-in-out delay-100 scale-50 xl:scale-100 text-3xl font-normal text-white hover:text-sky-700 border-2 hover:border-white hover:bg-white rounded-lg border-white p-4 pr-16 pl-16 cursor-pointer mb-5"
+          className="transition ease-in-out delay-100 scale-50 xl:scale-100 text-3xl font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white p-4 pr-16 pl-16 cursor-pointer mb-5"
         >
           Добавить мероприятие
         </div>
-        <div className="transition ease-in-out delay-100 scale-50 xl:scale-100 text-3xl font-normal text-white hover:text-sky-700 border-2 hover:border-white hover:bg-white rounded-lg border-white p-4 pr-16 pl-16 cursor-pointer mb-14">
+        <div className="transition ease-in-out delay-100 scale-50 xl:scale-100 text-3xl font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white p-4 pr-16 pl-16 cursor-pointer mb-14">
           Разместить объявление - ₽
         </div>
 
