@@ -4,23 +4,12 @@ import { useEffect, useState } from "react";
 import { Image } from "antd";
 
 const CardEvent = observer(({ data }: any) => {
-  const [img, setImg] = useState(null);
+  const [img, setImg] = useState<any>([]);
+  const [imgLinks, setImgLinks] = useState<any>([]);
   const [description, setDescription] = useState("");
 
-  // let im;
   const waitGifs = [
     "https://cs4.pikabu.ru/post_img/2014/10/26/11/1414342825_975442758.jpg",
-    // "https://media1.tenor.com/m/d23-C-mR704AAAAC/shvurlo-%D0%B6%D0%B4%D1%83.gif",
-    // "https://images.squarespace-cdn.com/content/v1/5bb039b60490792e51c69930/1580611723040-VT133WFQRDI3Y2AUTK2B/giphy+%281%29.gif",
-    // "https://i.pinimg.com/originals/44/5f/1a/445f1ab89041d998d9fa937ad7f9efa3.gif",
-    // "https://gifdb.com/images/featured/waiting-ixdcqr5r6rgskuen.gif",
-    // "https://64.media.tumblr.com/78842e06949159e3d28a527c25fb99d8/386a5022a82088aa-ad/s640x960/14e90205367dddfb371954c384dbd16a42395ee4.gif",
-    // "https://i.gifer.com/WZ3W.gif",
-    // "https://i.gifer.com/4qb.gif",
-    // "https://i.gifer.com/origin/20/201d3ea5b1e9cac8d049886977bffe3c_w200.gif",
-    // "https://99px.ru/sstorage/86/2016/10/image_862010162150152465627.gif",
-    // "https://media.tenor.com/Y7ShQ_3hnn8AAAAM/me-waiting-for-my-friends-to-get-online.gif",
-    // "https://gde-chto.ru/catalog/css/Gallery-master/img/loading.gif",
   ];
   let rndGif = Math.floor(Math.random() * waitGifs.length);
 
@@ -46,11 +35,6 @@ const CardEvent = observer(({ data }: any) => {
   const [dateText, setDateText] = useState(data.attributes.text_date);
 
   const getImg = () => {
-    // fetch(
-    //   `https://gde-chto.ru/elitegis/rest/services/${
-    //     store.cities[store.currentCity]
-    //   }/sights/MapServer/102/1931/attachments/`
-    // )
     fetch(
       `https://gde-chto.ru/elitegis/rest/services/${
         store.cities[store.currentCity]
@@ -60,11 +44,17 @@ const CardEvent = observer(({ data }: any) => {
     )
       .then((response) => response.json())
       .then((data) => {
-        // im = data.attachmentInfos[0].id;
-        setImg(data.attachmentInfos[0].id);
-        // return data.attachmentInfos[0].id;
-        // console.log(data.attachmentInfos[0].id);
+        // setImg(data.attachmentInfos[0].id);
+        let imgIdsArray: never[] = [];
+        data.attachmentInfos?.map((item: { id: never }) => {
+          imgIdsArray.push(item.id);
+        });
+        // if (imgIdsArray.length > 1) {
+        //   console.log(imgIdsArray);
+        // }
+        setImg(imgIdsArray);
       })
+      .then()
       .catch((error) => console.error(error));
   };
 
@@ -171,6 +161,7 @@ const CardEvent = observer(({ data }: any) => {
     const eventLong = data.attributes.geom_long;
     store.setCoordEvent(eventLat, eventLong);
     store.setСurrentTab(99);
+    store.setMapView(true);
     store.x = data.attributes.geom_lat;
     store.y = data.attributes.geom_long;
     store.scale = "2256";
@@ -181,14 +172,14 @@ const CardEvent = observer(({ data }: any) => {
     store.setСurrentTab(99);
   };
 
-  const removeEvent = () => {
-    console.log("Remove!", data.objectId);
-    let removedEvents =
-      JSON.parse(localStorage.getItem("removedEvents") || "[]") || [];
-    removedEvents.push(data.objectId);
-    localStorage.setItem("removedEvents", JSON.stringify(removedEvents));
-    store.checkEvents();
-  };
+  // const removeEvent = () => {
+  //   console.log("Remove!", data.objectId);
+  //   let removedEvents =
+  //     JSON.parse(localStorage.getItem("removedEvents") || "[]") || [];
+  //   removedEvents.push(data.objectId);
+  //   localStorage.setItem("removedEvents", JSON.stringify(removedEvents));
+  //   store.checkEvents();
+  // };
 
   const addFavoriteEvent = () => {
     console.log("В избранное!", data.objectId);
@@ -197,8 +188,47 @@ const CardEvent = observer(({ data }: any) => {
     favoriteEvents.push(data.objectId);
     localStorage.setItem("favoriteEvents", JSON.stringify(favoriteEvents));
     store.checkEvents();
-    setFav(true);
   };
+
+  const removeFavoriteEvent = () => {
+    console.log(data.objectId, "REMOVE FAV!!");
+
+    const filteredNumbers = store.favoriteEvents.filter(
+      (number: any) => number !== data.objectId
+    );
+    localStorage.setItem("favoriteEvents", JSON.stringify(filteredNumbers));
+    store.checkEvents();
+    console.log(filteredNumbers);
+    setFav(false);
+  };
+
+  useEffect(() => {
+    let imgLinksArray: any[] = [];
+    img?.map((item: string) => {
+      imgLinksArray.push(
+        `https://gde-chto.ru/elitegis/rest/services/${
+          store.cities[store.currentCity]
+        }/sights/MapServer/${data.layerId}/${data.objectId}/attachments/${item}`
+      );
+
+      // console.log(imgLinksArray);
+      setImgLinks(imgLinksArray);
+      // console.log(
+      //   `https://gde-chto.ru/elitegis/rest/services/${
+      //     store.cities[store.currentCity]
+      //   }/sights/MapServer/${data.layerId}/${
+      //     data.objectId
+      //   }/attachments/${item}`
+      // );
+    });
+  }, [img]);
+
+  useEffect(() => {
+    if (store.favoriteEvents.includes(data.objectId)) {
+      console.log(data.objectId, "INCLUDE!!");
+      setFav(true);
+    }
+  }, [store.favoriteEvents]);
 
   useEffect(() => {
     getImg();
@@ -215,7 +245,7 @@ const CardEvent = observer(({ data }: any) => {
         }
         // onClick={() => getFullCard()}
       >
-        <div className="relative cursor-pointer" onClick={() => removeEvent()}>
+        {/* <div className="relative cursor-pointer" onClick={() => removeEvent()}>
           <svg
             className="absolute top-0 right-0 z-10"
             width="18"
@@ -227,10 +257,10 @@ const CardEvent = observer(({ data }: any) => {
             <path d="M1 1L17 17" stroke="#ADADAD" strokeWidth="2" />
             <path d="M17 1L1 17" stroke="#ADADAD" strokeWidth="2" />
           </svg>
-        </div>
+        </div> */}
 
         <h1
-          className="relative font-sans sm:text-2xl text-md font-bold text-sky-700 cursor-pointer pb-4"
+          className="relative font-sans sm:text-xl text-base font-bold text-sky-700 cursor-pointer pb-4"
           onClick={() => getFullCard()}
           onMouseEnter={() => getTooltip(1)}
         >
@@ -310,34 +340,25 @@ const CardEvent = observer(({ data }: any) => {
             //     : waitGifs[rndGif]
             // }
             src={
-              img
+              img[0]
                 ? `https://gde-chto.ru/elitegis/rest/services/${
                     store.cities[store.currentCity]
                   }/sights/MapServer/${data.layerId}/${
                     data.objectId
-                  }/attachments/${img}`
-                : // : `https://gde-chto.ru/elitegis/rest/services/${
-                  //     store.cities[store.currentCity]
-                  //   }/sights/MapServer/${data.layerId}/${
-                  //     data.objectId
-                  //   }/attachments/${im}`
-                  waitGifs[rndGif]
+                  }/attachments/${img[0]}`
+                : waitGifs[rndGif]
             }
             alt=""
             onClick={() => getFullCard()}
-            // onClick={() => getImg()}
           />
         </div>
-
-        <Image
-          className={visibleEl + " pt-4 pb-4 w-full"}
-          // width={200}
-          src={`https://gde-chto.ru/elitegis/rest/services/${
-            store.cities[store.currentCity]
-          }/sights/MapServer/${data.layerId}/${
-            data.objectId
-          }/attachments/${img}`}
-        />
+        <Image.PreviewGroup items={imgLinks}>
+          <Image
+            className={visibleEl + " pt-4 pb-4 w-full"}
+            // width={200}
+            src={imgLinks[0]}
+          />
+        </Image.PreviewGroup>
 
         <div
           dangerouslySetInnerHTML={{ __html: description }}
@@ -443,17 +464,16 @@ const CardEvent = observer(({ data }: any) => {
 
         <div
           className="relative cursor-pointer"
-          onClick={() => addFavoriteEvent()}
-          onMouseEnter={() => getTooltip(4)}
+          // onMouseEnter={() => getTooltip(4)}
         >
           {fav ? (
             <svg
+              onClick={() => removeFavoriteEvent()}
               className="absolute bottom-0 right-0"
               width="29"
               height="27"
               viewBox="0 0 29 27"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 d="M14.15 1.62012L16.68 9.40012C16.95 10.2201 17.72 10.7801 18.58 10.7801H26.76L20.14 15.5901C19.44 16.1001 19.15 17.0001 19.41 17.8301L21.94 25.6101L15.32 20.8001C14.62 20.2901 13.67 20.2901 12.97 20.8001L6.35004 25.6101L8.88004 17.8301C9.15004 17.0101 8.85004 16.1001 8.15004 15.5901L1.54004 10.7801H9.72004C10.59 10.7801 11.35 10.2201 11.62 9.40012L14.15 1.62012Z"
@@ -463,12 +483,12 @@ const CardEvent = observer(({ data }: any) => {
             </svg>
           ) : (
             <svg
+              onClick={() => addFavoriteEvent()}
               className="absolute bottom-0 right-0"
               width="29"
               height="27"
               viewBox="0 0 29 27"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 d="M14.5 1.23607L17.0289 9.01925C17.2967 9.8433 18.0646 10.4012 18.931 10.4012H27.1147L20.494 15.2115C19.793 15.7208 19.4997 16.6235 19.7674 17.4476L22.2963 25.2307L15.6756 20.4205C14.9746 19.9112 14.0254 19.9112 13.3244 20.4205L6.70366 25.2307L9.23257 17.4476C9.50031 16.6235 9.207 15.7208 8.50603 15.2115L7.91824 16.0205L8.50602 15.2115L1.88525 10.4012L10.069 10.4012C10.9354 10.4012 11.7033 9.8433 11.9711 9.01925L14.5 1.23607Z"

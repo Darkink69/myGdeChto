@@ -13,18 +13,18 @@ const Menu = observer(() => {
 
   return (
     <>
-      <div className="flex items-center flex-col pt-40 text-sm sm:text-2xl text-white font-bold p-20">
+      <div className="flex items-center xl:gap-8 gap-2 flex-col sm:pt-40 pt-28 text-sm sm:text-2xl text-white font-bold sm:p-20 p-6">
         <div
           onClick={() => getAddEvent()}
-          className="transition ease-in-out delay-100 scale-50 xl:scale-100 text-3xl font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white p-4 pr-16 pl-16 cursor-pointer mb-5"
+          className="transition ease-in-out delay-100 xl:text-3xl text-sx font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white xl:p-4 p-2 pr-8 pl-8 cursor-pointer "
         >
           Добавить мероприятие
         </div>
-        <div className="transition ease-in-out delay-100 scale-50 xl:scale-100 text-3xl font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white p-4 pr-16 pl-16 cursor-pointer mb-14">
+        <div className="transition ease-in-out delay-100 xl:text-3xl text-sx font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white xl:p-4 p-2 cursor-pointer ">
           Разместить объявление - ₽
         </div>
 
-        <p className="cursor-pointer text-4xl font-bold text-blue-200">
+        <p className="cursor-pointer xl:text-4xl text-2xl font-bold text-blue-200">
           <a href="https://gde-chto.ru/ru/resourses/news/main/" target="_blank">
             Блог
           </a>

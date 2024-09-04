@@ -81,7 +81,6 @@ const AllEvents = observer(() => {
     let shownEvents: { objectId: string | Number | null }[] = [];
     events?.map((item: { objectId: string | Number | null }) => {
       if (store.favoriteEvents.includes(item.objectId)) {
-        // console.log(item);
         shownEvents.push(item);
       }
     });
@@ -91,11 +90,11 @@ const AllEvents = observer(() => {
   };
 
   const filterEvents = () => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
+    // window.scrollTo({
+    //   top: 0,
+    //   left: 0,
+    //   behavior: "smooth",
+    // });
     // setMap(false);
     setFilters(true);
     store.setСurrentTab(3);
@@ -262,23 +261,23 @@ const AllEvents = observer(() => {
           <div
             className={
               store.mapView
-                ? "pt-8 flex items-center relative"
-                : "pt-32 md:flex md:items-center relative"
+                ? "pt-4 md:pt-8 flex gap-2 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
+                : "pt-32 flex gap-2 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
             }
           >
             <h1
               className={
                 store.currentTab == 0
                   ? underlineTabStyle +
-                    " pr-2 cursor-pointer text-slate-600 font-bold "
-                  : " pr-2 cursor-pointer text-slate-600 font-bold"
+                    " cursor-pointer text-slate-600 font-bold "
+                  : " cursor-pointer text-slate-600 font-bold"
               }
               onClick={() => sortEvents()}
             >
               Все мероприятия
             </h1>
             <span
-              className="p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-slate-400 cursor-pointer"
+              className="-left-4 p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-slate-400 cursor-pointer"
               onClick={() => sortEvents()}
             >
               {store.allEvents}
@@ -287,8 +286,8 @@ const AllEvents = observer(() => {
               className={
                 store.currentTab == 1
                   ? underlineTabStyle +
-                    " pl-8 pr-8 font-bold text-slate-600 cursor-pointer"
-                  : " pl-8 pr-8 font-bold text-slate-600 cursor-pointer"
+                    " font-bold text-slate-600 cursor-pointer"
+                  : " font-bold text-slate-600 cursor-pointer"
               }
               onClick={() => sortSoonEvents()}
             >
@@ -300,8 +299,8 @@ const AllEvents = observer(() => {
                 className={
                   store.currentTab == 3
                     ? underlineTabStyle +
-                      " pr-8 font-bold text-slate-600 cursor-pointer"
-                    : " pr-8 font-bold text-slate-600 cursor-pointer"
+                      " font-bold text-slate-600 cursor-pointer"
+                    : " font-bold text-slate-600 cursor-pointer"
                 }
                 onClick={() => filterEvents()}
               >
@@ -310,7 +309,7 @@ const AllEvents = observer(() => {
             </div>
 
             <p
-              className="pr-8 font-bold text-slate-600 cursor-pointer"
+              className="font-bold text-slate-600 cursor-pointer"
               onClick={() => shuffleEvents()}
             >
               Перемешать
@@ -320,8 +319,8 @@ const AllEvents = observer(() => {
               className={
                 store.currentTab == 2
                   ? underlineTabStyle +
-                    " pr-2 font-bold text-slate-600 cursor-pointer"
-                  : " pr-2 font-bold text-slate-600 cursor-pointer"
+                    " font-bold text-slate-600 cursor-pointer"
+                  : " font-bold text-slate-600 cursor-pointer"
               }
               onClick={() => sortFavorites()}
             >
@@ -330,7 +329,7 @@ const AllEvents = observer(() => {
 
             {store.favoriteEvents.length && (
               <span
-                className="p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-sky-400 cursor-pointer"
+                className="-left-5 p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-sky-400 cursor-pointer"
                 onClick={() => sortFavorites()}
               >
                 {store.favoriteEvents.length}
@@ -338,17 +337,17 @@ const AllEvents = observer(() => {
             )}
 
             <Search
-              className="pl-8 pr-8"
-              placeholder="Поиск событий"
+              className=""
+              placeholder="Поиск мероприятий"
               onSearch={onSearch}
-              style={{ width: 200 }}
+              style={{ width: 250 }}
               // allowClear={true}
             />
 
             {/* <p className="pr-4 font-bold text-slate-600">Прошедшие</p> */}
 
             <p
-              className="pl-4 pr-4 font-bold text-sky-400 cursor-pointer absolute right-0"
+              className="font-bold text-sky-400 cursor-pointer"
               onClick={() => store.setMapView(store.mapView ? false : true)}
             >
               {store.mapView ? "Скрыть карту" : "Показать карту"}
