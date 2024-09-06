@@ -29,9 +29,8 @@ const AddEvent = observer(() => {
     <>
       <span className="relative flex h-3 w-3 scale-150">
         <span className="animate-ping fixed -top-[400px] -right-[970px] w-[50px] h-[50px] inline-flex rounded-full bg-red-400 opacity-75"></span>
-        {/* <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span> */}
       </span>
-      <div className="pt-8">
+      <div className="pt-[600px]">
         <p className="text-3xl font-bold text-sky-700">
           Как добавить мероприятие прямо сейчас?
         </p>

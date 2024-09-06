@@ -3,7 +3,7 @@ import store from "../store/store";
 import CardEvent from "./CardEvent";
 import AllMap from "./YMaps";
 import AddEvent from "./AddEvent";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "antd";
 
 const { Search } = Input;
@@ -23,6 +23,7 @@ const AllEvents = observer(() => {
   const [resetFilters, setResetFilters] = useState(false);
   const [filters, setFilters] = useState(false);
   const [typesFilters, setTypesFilters] = useState([0]);
+  const allEv = useRef<any>(null);
   // const [styleFilter, setStyleFilter] = useState(
   //   " cursor-pointer hover:scale-95 pr-4 pl-4 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-gray-200 border-2"
   // );
@@ -87,18 +88,14 @@ const AllEvents = observer(() => {
     setshownEvents(shownEvents);
     store.setСurrentTab(2);
     setResetFilters(true);
+    store.setMapView(false);
   };
 
   const filterEvents = () => {
-    // window.scrollTo({
-    //   top: 0,
-    //   left: 0,
-    //   behavior: "smooth",
-    // });
-    // setMap(false);
     setFilters(true);
     store.setСurrentTab(3);
     setResetFilters(true);
+    store.setMapView(false);
     console.log("filtered!");
   };
 
@@ -120,6 +117,7 @@ const AllEvents = observer(() => {
 
   const shuffleEvents = () => {
     setEvents(shownEvents.sort(() => Math.random() - 0.5));
+    store.setMapView(false);
   };
 
   const sortSoonEvents = () => {
@@ -140,7 +138,7 @@ const AllEvents = observer(() => {
     });
 
     setshownEvents(soonEvents);
-    // setMap(false);
+    store.setMapView(false);
     store.setСurrentTab(1);
     setFilters(false);
     setResetFilters(true);
@@ -169,6 +167,7 @@ const AllEvents = observer(() => {
     setshownEvents(searchedEvents);
     store.setСurrentTab(99);
     setResetFilters(true);
+    store.setMapView(false);
   };
 
   // const useMap = () => {
@@ -222,7 +221,7 @@ const AllEvents = observer(() => {
   }, [store.x, store.y]);
 
   useEffect(() => {
-    console.log(store.currentType);
+    // console.log(store.currentType);
     let typeEvents: { objectId: string | Number | null }[] = [];
     shownEvents?.map(
       (item: { attributes: any; objectId: string | Number | null }) => {
@@ -253,16 +252,108 @@ const AllEvents = observer(() => {
 
   return (
     <>
-      {store.mapView && <AllMap />}
+      <AllMap />
+      {store.mapView && (
+        <div className="fixed container top-2/4 -ml-2 drop-shadow-lg cursor-pointer">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <a
+              href={`https://gde-chto.ru/catalog/${
+                store.sourceCities[store.currentCity]
+              }`}
+              target="_blank"
+            >
+              <circle cx="24" cy="24" r="24" fill="white" />
+            </a>
+
+            <path
+              d="M10.25 20V10H19.75"
+              stroke="#808080"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M20 37.25L10 37.25L10 27.75"
+              stroke="#808080"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M37 27.25L37 37.25L27.5 37.25"
+              stroke="#808080"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M27.25 10L37.25 10L37.25 19.5"
+              stroke="#808080"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      )}
+
       {store.addEventView && <AddEvent />}
 
       {store.cardsEventsView && (
-        <div>
+        <div
+          ref={allEv}
+          className={
+            store.mapView
+              ? "fixed container mx-auto top-[90%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+              : "fixed container mx-auto top-[26%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+          }
+        >
+          {/* onClick={() => store.setMapView(store.mapView ? false : true)} */}
+          {store.mapView ? (
+            <div>
+              <svg
+                className="fixed top-[82%] inset-x-1/2 -ml-6 opacity-50 z-40 cursor-pointer"
+                onClick={() => store.setMapView(store.mapView ? false : true)}
+                width="50"
+                height="50"
+                viewBox="0 0 50 50"
+                fill="none"
+              >
+                <circle cx="25" cy="25" r="25" fill="#26A69A" />
+                <path
+                  d="M37.5 32.1426L25 17.8569L12.5 32.1426"
+                  stroke="white"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+          ) : (
+            <div className="fixed top-[18%] inset-x-1/2 -ml-4 opacity-50 z-40 cursor-pointer">
+              <svg
+                onClick={() => store.setMapView(store.mapView ? false : true)}
+                width="50"
+                height="50"
+                viewBox="0 0 50 50"
+                fill="none"
+              >
+                <circle
+                  cx="25"
+                  cy="25"
+                  r="25"
+                  transform="rotate(180 25 25)"
+                  fill="#26A69A"
+                />
+                <path
+                  d="M12.5 17.8574L25 32.1431L37.5 17.8574"
+                  stroke="white"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+          )}
           <div
             className={
               store.mapView
-                ? "pt-4 md:pt-8 flex gap-2 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
-                : "pt-32 flex gap-2 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
+                ? "flex z-40 gap-2 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
+                : "flex z-40 gap-2 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
             }
           >
             <h1
@@ -516,9 +607,16 @@ const AllEvents = observer(() => {
               })}
           </div>
           <div
+            className={
+              store.mapView
+                ? "fixed container mx-auto h-[20%] -z-10 rounded-3xl -bottom-10 -ml-4 bg-white opacity-95 drop-shadow-lg"
+                : "fixed container mx-auto h-5/6 -z-10 rounded-3xl -bottom-10 -ml-4 bg-white opacity-95 drop-shadow-lg"
+            }
+          ></div>
+          <div
             className="fixed bottom-0 left-0 p-4 z-10 cursor-pointer hover:animate-bounce"
             onClick={() =>
-              window.scrollTo({
+              allEv.current.scrollTo({
                 top: 0,
                 left: 0,
                 behavior: "smooth",
