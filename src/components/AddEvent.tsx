@@ -1,9 +1,10 @@
 // import { useEffect, useState } from "react";
 import store from "../store/store";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const AddEvent = observer(() => {
+  const divRef = useRef<any>(null);
   // const coGis = () => {
   //   // let img =
   //   //   "https://sun4-19.userapi.com/s/v1/ig2/uSzLXYqlXGPwpQ2aqY20JTQIUksvSSrIhik-G0EmZ9TdwXgqmxB5vokxfkGAZ_eNAms-HjmNY1FtDVqMfdyyNTRc.jpg";
@@ -27,10 +28,63 @@ const AddEvent = observer(() => {
 
   return (
     <>
-      <span className="relative flex h-3 w-3 scale-150">
-        <span className="animate-ping fixed -top-[400px] -right-[970px] w-[50px] h-[50px] inline-flex rounded-full bg-red-400 opacity-75"></span>
-      </span>
-      <div className="pt-[600px]">
+      {!store.mapView ? (
+        <div>
+          <svg
+            className="fixed sm:top-[84%] top-[92%] inset-x-1/2 -ml-6 opacity-50 z-20 cursor-pointer"
+            onClick={() => store.setMapView(store.mapView ? false : true)}
+            width="50"
+            height="50"
+            viewBox="0 0 50 50"
+            fill="none"
+          >
+            <circle cx="25" cy="25" r="25" fill="#26A69A" />
+            <path
+              d="M37.5 32.1426L25 17.8569L12.5 32.1426"
+              stroke="white"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      ) : (
+        <div className="fixed top-[18%] inset-x-1/2 -ml-4 opacity-50 z-20 cursor-pointer">
+          <svg
+            onClick={() => store.setMapView(store.mapView ? false : true)}
+            width="50"
+            height="50"
+            viewBox="0 0 50 50"
+            fill="none"
+          >
+            <circle
+              cx="25"
+              cy="25"
+              r="25"
+              transform="rotate(180 25 25)"
+              fill="#26A69A"
+            />
+            <path
+              d="M12.5 17.8574L25 32.1431L37.5 17.8574"
+              stroke="white"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      )}
+      <div
+        ref={divRef}
+        onClick={() => divRef.current.remove()}
+        className="animate-ping fixed z-20 top-[10%] right-[3%] sm:right-[15%] w-[50px] h-[50px] rounded-full bg-red-400 opacity-75 scale-150"
+      ></div>
+
+      <div
+        className={
+          store.mapView
+            ? "fixed z-10 container mx-auto sm:top-[25%] top-[24%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+            : "fixed z-10 container mx-auto sm:top-[90%] top-[99%] overflow-x-hidden overflow-scroll w-11/12 h-[10%]"
+        }
+      >
         <p className="text-3xl font-bold text-sky-700">
           Как добавить мероприятие прямо сейчас?
         </p>
@@ -60,15 +114,21 @@ const AddEvent = observer(() => {
           быстро и бесплатно разместить свой анонс.
         </p>
         <img src="https://gde-chto.ru/media/mbndsrj0/group-640.png" alt="" />
-        <br />
+        <div
+          onClick={() => cancelAddEvent()}
+          className="transition ease-in-out delay-100 block mr-4 w-[280px] left-0 text-xl text-white hover:bg-emerald-500 rounded-lg border-sky-700 bg-sky-700 p-2 pr-8 pl-8 cursor-pointer"
+        >
+          Назад к мероприятиям
+        </div>
       </div>
 
       <div
-        onClick={() => cancelAddEvent()}
-        className="transition ease-in-out delay-100 block mr-4 w-[280px] left-0 text-xl text-white hover:bg-emerald-500 rounded-lg border-sky-700 bg-sky-700 p-2 pr-8 pl-8 cursor-pointer"
-      >
-        Назад к мероприятиям
-      </div>
+        className={
+          !store.mapView
+            ? "fixed container mx-auto -z-1 sm:h-[18%] h-[10%] rounded-3xl -bottom-10 -ml-4 bg-white opacity-95 drop-shadow-lg"
+            : "fixed container mx-auto -z-1 sm:h-[83%] h-[83%] rounded-3xl -bottom-10 -ml-4 bg-white opacity-95 drop-shadow-lg"
+        }
+      ></div>
       {/* <p className="cursor-pointer" onClick={() => coGis()}>
         гет-запросик
       </p> */}

@@ -63,21 +63,21 @@ const Menu = observer(() => {
         </video> */}
         <div
           onClick={() => getAddEvent()}
-          className="transition ease-in-out delay-100 xl:text-3xl text-sx font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white xl:p-4 p-2 pr-8 pl-8 cursor-pointer "
+          className="transition ease-in-out delay-100 flex justify-center xl:text-3xl text-xl w-[90%] md:w-[28%] font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white xl:p-4 p-2 pr-8 pl-8 cursor-pointer "
         >
           Добавить мероприятие
         </div>
-        <div className="transition ease-in-out delay-100 xl:text-3xl text-sx font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white xl:p-4 p-2 cursor-pointer ">
+        <div className="transition ease-in-out delay-100 flex justify-center xl:text-3xl text-xl w-[90%] md:w-[28%] font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white xl:p-4 p-2 cursor-pointer ">
           Разместить объявление - ₽
         </div>
 
-        <p className="cursor-pointer xl:text-4xl text-2xl font-bold text-blue-200">
+        <p className="transition ease-in-out delay-100 flex justify-center xl:text-3xl text-xl w-[90%] md:w-[28%] font-normal bg-emerald-500 text-white hover:text-sky-700 hover:border-white hover:bg-white rounded-lg border-white xl:p-4 p-2 cursor-pointer ">
           <a href="https://gde-chto.ru/ru/resourses/news/main/" target="_blank">
             Блог
           </a>
         </p>
 
-        <div className="grid items-start sm:grid-cols-3 grid-cols-1 gap-4 pt-4">
+        {/* <div className="grid items-start sm:grid-cols-3 grid-cols-1 gap-4 pt-4">
           <div className="w-[200px] ">
             <a
               href="https://gde-chto.ru/ru/resourses/news/bloggdechto/news/post-4/"
@@ -113,7 +113,19 @@ const Menu = observer(() => {
               Интерактивная карта мероприятий «ГдеЧто»
             </p>
           </div>
-        </div>
+        </div> */}
+        <p
+          onClick={() => store.setLayerIds(105)}
+          className="fixed bottom-10 right-28 text-gray-700 text-sm"
+        >
+          Архив
+        </p>
+        <p
+          onClick={() => store.setLayerIds(20100)}
+          className="fixed bottom-10 right-10 text-gray-700 text-sm"
+        >
+          All Ads
+        </p>
       </div>
     </>
   );

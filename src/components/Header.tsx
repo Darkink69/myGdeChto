@@ -40,17 +40,11 @@ const Header = observer(() => {
 
   return (
     <>
-      <div className="fixed bg-[url('../src/assets/header_bg.jpg')] z-50 sm:h-[100px] h-[100px] w-full shadow-md">
-        <div className="flex items-center 2xl:pl-40 pl-4 ">
+      <div className="fixed bg-cover bg-[url('../src/assets/header_bg.jpg')] z-50 sm:h-[100px] h-[60px] w-full shadow-md">
+        <div className="flex items-center 2xl:pl-40 pl-0">
           <svg
-            className="cursor-pointer m-1 hover:drop-shadow-lg"
-            onClick={() =>
-              window.scrollTo({
-                top: 0,
-                left: 0,
-                behavior: "smooth",
-              })
-            }
+            className="cursor-pointer sm:mt-1 -mt-3 hover:drop-shadow-lg scale-50 md:scale-100"
+            onClick={() => document.location.reload()}
             width="90"
             height="90"
             viewBox="0 0 100 100"
@@ -120,14 +114,14 @@ const Header = observer(() => {
           </svg>
 
           <div className="relative cursor-pointer" onClick={() => changeCity()}>
-            <p className="pl-2 sm:pl-4 font-sans font-bold text-xl sm:text-3xl text-white ">
+            <p className="pl-0 sm:pl-4 -mt-4 sm:-mt-0 font-sans font-bold text-xl sm:text-3xl text-white ">
               {store.titleCities[store.currentCity]}
             </p>
             <svg
               className={
                 viewCities
-                  ? "rotate-180 absolute sm:top-3 top-2 -right-8 scale-50 sm:scale-100"
-                  : "absolute sm:top-4 top-2 -right-8 scale-50 sm:scale-100"
+                  ? "rotate-180 absolute sm:top-3 -top-2 -right-8 scale-50 sm:scale-100"
+                  : "absolute sm:top-4 -top-2 -right-8 scale-50 sm:scale-100"
               }
               width="24"
               height="16"
@@ -146,7 +140,7 @@ const Header = observer(() => {
           </div>
 
           <div
-            className="absolute 2xl:mr-44 mr-4 right-0 cursor-pointer hover:drop-shadow-lg"
+            className="absolute 2xl:mr-44 mr-4 sm:top-4 top-2 right-0 cursor-pointer hover:drop-shadow-lg"
             onClick={() => setViewMenu()}
           >
             <svg
