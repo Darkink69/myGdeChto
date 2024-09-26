@@ -37,7 +37,15 @@ class Store {
   removedEvents = [];
   favoriteEvents: any = [];
   dataFilter = 0;
+  sorted = 0;
   requestSearch = "";
+  daysOfEvents = 14;
+  datesFilters: any = [];
+  // datesFilters: any = [
+  //   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+  //   22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+  // ];
+
   eventLat = 0.0;
   eventLong = 0.0;
   menuView = false;
@@ -48,11 +56,16 @@ class Store {
     " underline decoration-4 underline-offset-8 decoration-sky-500";
 
   styleFilter =
-    " cursor-pointer hover:scale-95 pr-4 pl-4 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-gray-200 border-2";
+    " cursor-pointer hover:scale-95 pr-4 pl-4 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold border-2";
+  // styleFilter =
+  //   " cursor-pointer hover:scale-95 pr-4 pl-4 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-gray-200 border-2";
+
   styleColor = "border-gray-300 border-2";
   styleDateEl =
-    "relative inline-block font-bold cursor-pointer before:block before:absolute before:-inset-1 ";
+    "relative inline-block font-bold before:block before:absolute before:-inset-1 ";
 
+  toleranceLat = 0.01;
+  toleranceLong = 0.005;
   x = "83.06831359863283";
   y = "54.93227079942556";
   // scale = "2256";
@@ -60,13 +73,25 @@ class Store {
   currentObjectId = 0;
   sourceCity = `https://gde-chto.ru/catalog/${
     this.sourceCities[this.currentCity]
-  }#}`;
+  }`;
   // sourceCity = `https://gde-chto.ru/catalog/${
   //   this.sourceCities[this.currentCity]
   // }#&scale=${this.scale}&centerX=${this.x}&centerY=${this.y}`;
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setDatesFilters(datesFilters: any) {
+    this.datesFilters = datesFilters;
+  }
+
+  setSourceCity(sourceCity: string) {
+    this.sourceCity = sourceCity;
+  }
+
+  setSorted(sorted: number) {
+    this.sorted = sorted;
   }
 
   setData(allEvents: number, allAds: number) {

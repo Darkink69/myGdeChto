@@ -9,20 +9,21 @@ import ArrowUp from "./SVG_components/ArrowUp";
 import ArrowDown from "./SVG_components/ArrowDown";
 import PageUp from "./SVG_components/PageUp";
 import FilterIcon from "./SVG_components/Filter";
-import Item from "antd/es/list/Item";
+import EmptyCard from "./SVG_components/EmptyCard";
+import SortByDate from "./SVG_components/SortByDate";
+import ShuffleByDate from "./SVG_components/SortByDateShuffle";
+import Day from "./DayFilter";
 const { Search } = Input;
 
 const AllEvents = observer(() => {
-  // const toleranceLat = 0.01;
-  // const toleranceLong = 0.005;
-
   const [data, setData] = useState<any>(null);
   const [allEvents, setAllEvents] = useState<any>(null);
-  const [allAds, setAllAds] = useState<any>(null);
+  // const [allAds, setAllAds] = useState<any>(null);
   const [shownCards, setShownCards] = useState<any>(null);
 
   const [resetFilters, setResetFilters] = useState(false);
   const [filters, setFilters] = useState(false);
+  // const [typesFilters, setTypesFilters] = useState([0]);
   const [typesFilters, setTypesFilters] = useState([0]);
   const [isLoaded, setIsloaded] = useState(false);
   const allEv = useRef<any>(null);
@@ -51,7 +52,7 @@ const AllEvents = observer(() => {
         ads.push(item);
       }
       setAllEvents(events);
-      setAllAds(ads);
+      // setAllAds(ads);
       setIsloaded(true);
       setShownCards(events.sort(() => Math.random() - 0.5));
       // setShownCards(events);
@@ -61,6 +62,8 @@ const AllEvents = observer(() => {
     setTypesFilters([0]);
     setResetFilters(false);
     store.setСurrentTab(0);
+    store.setSorted(0);
+    store.setDatesFilters([]);
     store.setData(events.length, ads.length);
   };
 
@@ -74,7 +77,9 @@ const AllEvents = observer(() => {
     setShownCards(shownEvents);
     store.setСurrentTab(2);
     setResetFilters(true);
+    setFilters(false);
     store.setMapView(false);
+    store.setSorted(0);
   };
 
   const filterEvents = () => {
@@ -82,11 +87,14 @@ const AllEvents = observer(() => {
     store.setСurrentTab(3);
     setResetFilters(true);
     store.setMapView(false);
-    // console.log("filtered!");
+    store.setSorted(0);
   };
 
   const useFilterEvents = (typeEvent: number) => {
     let currentFilters = [];
+    if (typesFilters.length === 1) {
+      currentFilters.push(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15);
+    }
     currentFilters.push(...typesFilters);
     if (!currentFilters.includes(typeEvent)) {
       currentFilters.push(typeEvent);
@@ -96,34 +104,8 @@ const AllEvents = observer(() => {
       const delArray = currentFilters.filter((number) => number !== typeEvent);
       setTypesFilters(delArray);
     }
-
-    // console.log("use!", typeEvent);
-    // console.log(typesFilters);
+    store.setSorted(0);
   };
-
-  // const sortSoonEvents = () => {
-  //   let soonEvents: { objectId: string | Number | null }[] = [];
-  //   const now = new Date().getDate();
-  //   shownEvents.map((item: any) => {
-  //     const day = new Date(item.attributes.date_to).getDate();
-  //     if (day === now) {
-  //       soonEvents.push(item);
-  //     }
-  //   });
-
-  //   shownEvents.map((item: any) => {
-  //     const day = new Date(item.attributes.date_to).getDate();
-  //     if (day === now + 1) {
-  //       soonEvents.push(item);
-  //     }
-  //   });
-
-  //   setshownEvents(soonEvents);
-  //   store.setMapView(false);
-  //   store.setСurrentTab(1);
-  //   setFilters(false);
-  //   setResetFilters(true);
-  // };
 
   const onSearch = (value: string, _e: any) => {
     console.log(value);
@@ -153,6 +135,25 @@ const AllEvents = observer(() => {
     store.setСurrentTab(99);
     setResetFilters(true);
     store.setMapView(false);
+  };
+
+  const sortByDate = () => {
+    console.log("Sort!");
+
+    if (store.sorted === 1) {
+      shownCards?.sort(
+        (a: any, b: any) => a.attributes.date_from - b.attributes.date_from
+      );
+    } else {
+      shownCards?.sort(() => Math.random() - 0.5);
+    }
+
+    let checkArray: any[] = [];
+    shownCards?.map((item: any) => {
+      // console.log(item);
+      checkArray.push(item);
+    });
+    setShownCards(checkArray);
   };
 
   useEffect(() => {
@@ -218,23 +219,57 @@ const AllEvents = observer(() => {
   useEffect(() => {
     let typeEvents: { attributes: any; objectId: string | Number | null }[] =
       [];
+    if (store.datesFilters.length === 0) {
+      console.log("store.datesFilters.length === 1");
+      store.setDatesFilters([0]);
+    }
+
     allEvents?.map(
       (item: { attributes: any; objectId: string | Number | null }) => {
-        if (!typesFilters.includes(item.attributes.type)) {
+        const dateEvent = new Date(item.attributes.date_from).getDate();
+        if (
+          !typesFilters.includes(item.attributes.type) &&
+          !store.datesFilters.includes(dateEvent)
+        ) {
           typeEvents.push(item);
         }
       }
     );
     setShownCards(typeEvents);
-  }, [typesFilters]);
+    console.log(typeEvents.length, "- найдено");
+  }, [typesFilters, store.datesFilters]);
+
+  useEffect(() => {
+    console.log("loading...");
+
+    // console.log("use!");
+    // if (shownCards?.length === 0) {
+    //   console.log("Ничего нету...");
+    // }
+  }, [shownCards]);
+
+  useEffect(() => {
+    sortByDate();
+  }, [store.sorted]);
 
   // useEffect(() => {
-  //   shownEvents(false);
-  // }, []);
+  //   console.log(store.datesFilters);
+  //   let daysEvents: { attributes: any; objectId: string | Number | null }[] =
+  //     [];
+  //   shownCards?.map((item: any) => {
+  //     const dateEvent = new Date(item.attributes.date_from).getDate();
+  //     if (store.datesFilters.includes(dateEvent)) {
+  //       daysEvents.push(item);
+  //     }
+  //   });
+  //   setShownCards(daysEvents);
+
+  // }, [store.datesFilters]);
 
   return (
     <>
       <AllMap />
+
       {store.addEventView && <AddEvent />}
 
       {store.cardsEventsView && (
@@ -270,12 +305,15 @@ const AllEvents = observer(() => {
               onClick={() => {
                 store.setСurrentTab(0);
                 setFilters(false);
-                setResetFilters(false);
+                // setResetFilters(true);
+                setTypesFilters([0]);
                 // setIsloaded(false);
                 // setShownCards(null);
                 setShownCards(allEvents);
                 // setIsloaded(true);
                 store.setMapView(false);
+                // store.setDatesFilters([]);
+                store.setSorted(0);
               }}
             >
               Все мероприятия
@@ -331,16 +369,42 @@ const AllEvents = observer(() => {
             >
               {store.mapView ? "Скрыть карту" : "Показать карту"}
             </p>
+
+            {store.sorted === 0 ? (
+              <div
+                // className="relative -left-3"
+                onClick={() => store.setSorted(1)}
+              >
+                <SortByDate />
+              </div>
+            ) : (
+              <div onClick={() => store.setSorted(0)}>
+                <ShuffleByDate />
+              </div>
+            )}
+
+            {/* <div className="relative -left-3">
+              <FilterIcon />
+            </div> */}
           </div>
 
           {filters ? (
-            <div className="pt-4 flex gap-1 flex-wrap">
+            <div className="mt-8 md:w-2/4 w-full">
+              <Day />
+            </div>
+          ) : (
+            ""
+          )}
+
+          {filters ? (
+            <div className="pt-8 flex gap-1 flex-wrap">
               <p
                 onClick={() => useFilterEvents(1)}
                 className={
                   typesFilters.includes(1)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#7777F7] bg-[#7777F7]"
+                    ? store.styleFilter + " text-[#7777F7] border-[#7777F7]"
+                    : store.styleFilter +
+                      " text-white border-[#7777F7] bg-[#7777F7]"
                 }
               >
                 Музыка
@@ -349,8 +413,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(2)}
                 className={
                   typesFilters.includes(2)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#507077] bg-[#507077]"
+                    ? store.styleFilter + " text-[#507077] border-[#507077]"
+                    : store.styleFilter +
+                      " text-white border-[#507077] bg-[#507077]"
                 }
               >
                 Выставки
@@ -359,8 +424,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(3)}
                 className={
                   typesFilters.includes(3)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#B74890] bg-[#B74890]"
+                    ? store.styleFilter + " text-[#B74890] border-[#B74890]"
+                    : store.styleFilter +
+                      " text-white border-[#B74890] bg-[#B74890]"
                 }
               >
                 Праздники
@@ -369,8 +435,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(4)}
                 className={
                   typesFilters.includes(4)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#8CC63F] bg-[#8CC63F]"
+                    ? store.styleFilter + " text-[#8CC63F] border-[#8CC63F]"
+                    : store.styleFilter +
+                      " text-white border-[#8CC63F] bg-[#8CC63F]"
                 }
               >
                 Дети
@@ -379,8 +446,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(5)}
                 className={
                   typesFilters.includes(5)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#FC5454] bg-[#FC5454]"
+                    ? store.styleFilter + " text-[#FC5454] border-[#FC5454]"
+                    : store.styleFilter +
+                      " text-white border-[#FC5454] bg-[#FC5454]"
                 }
               >
                 Спорт
@@ -389,8 +457,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(6)}
                 className={
                   typesFilters.includes(6)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#80CCFF] bg-[#80CCFF]"
+                    ? store.styleFilter + " text-[#80CCFF] border-[#80CCFF]"
+                    : store.styleFilter +
+                      " text-white border-[#80CCFF] bg-[#80CCFF]"
                 }
               >
                 Курсы
@@ -399,8 +468,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(7)}
                 className={
                   typesFilters.includes(7)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#58AAAB] bg-[#58AAAB]"
+                    ? store.styleFilter + " text-[#58AAAB] border-[#58AAAB]"
+                    : store.styleFilter +
+                      " text-white border-[#58AAAB] bg-[#58AAAB]"
                 }
               >
                 Танцы
@@ -409,8 +479,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(8)}
                 className={
                   typesFilters.includes(8)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#FBB03B] bg-[#FBB03B]"
+                    ? store.styleFilter + " text-[#FBB03B] border-[#FBB03B]"
+                    : store.styleFilter +
+                      " text-white border-[#FBB03B] bg-[#FBB03B]"
                 }
               >
                 Еда
@@ -419,8 +490,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(9)}
                 className={
                   typesFilters.includes(9)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#FF6B57] bg-[#FF6B57]"
+                    ? store.styleFilter + " text-[#FF6B57] border-[#FF6B57]"
+                    : store.styleFilter +
+                      " text-white border-[#FF6B57] bg-[#FF6B57]"
                 }
               >
                 Игры
@@ -429,8 +501,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(10)}
                 className={
                   typesFilters.includes(10)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#7D6793] bg-[#7D6793]"
+                    ? store.styleFilter + " text-[#7D6793] border-[#7D6793]"
+                    : store.styleFilter +
+                      " text-white border-[#7D6793] bg-[#7D6793]"
                 }
               >
                 Ярмарки
@@ -439,8 +512,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(12)}
                 className={
                   typesFilters.includes(12)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#2ECC71] bg-[#2ECC71]"
+                    ? store.styleFilter + " text-[#2ECC71] border-[#2ECC71]"
+                    : store.styleFilter +
+                      " text-white border-[#2ECC71] bg-[#2ECC71]"
                 }
               >
                 Экскурсии
@@ -449,8 +523,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(13)}
                 className={
                   typesFilters.includes(13)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#157764] bg-[#157764]"
+                    ? store.styleFilter + " text-[#157764] border-[#157764]"
+                    : store.styleFilter +
+                      " text-white border-[#157764] bg-[#157764]"
                 }
               >
                 Театр Кино
@@ -459,8 +534,9 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(14)}
                 className={
                   typesFilters.includes(14)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#FF978F] bg-[#FF978F]"
+                    ? store.styleFilter + " text-[#FF978F] border-[#FF978F]"
+                    : store.styleFilter +
+                      " text-white border-[#FF978F] bg-[#FF978F]"
                 }
               >
                 Тренировки
@@ -469,14 +545,22 @@ const AllEvents = observer(() => {
                 onClick={() => useFilterEvents(15)}
                 className={
                   typesFilters.includes(15)
-                    ? store.styleFilter + store.styleColor
-                    : store.styleFilter + "border-[#F458F9] bg-[#F458F9]"
+                    ? store.styleFilter + " text-[#F458F9] border-[#F458F9]"
+                    : store.styleFilter +
+                      " text-white border-[#F458F9] bg-[#F458F9]"
                 }
               >
                 Вечеринки
               </p>
               {resetFilters && (
-                <div onClick={() => setShownCards(allEvents)}>
+                <div
+                  onClick={() => {
+                    setShownCards(allEvents);
+                    setTypesFilters([0]);
+                    store.setSorted(0);
+                    // console.log(typesFilters);
+                  }}
+                >
                   <p className="pl-4 pr-4 pt-1 pb-1 rounded-full inline-block relative border-2 border-red-600 font-bold text-xs text-red-600 hover:bg-red-600 hover:text-white cursor-pointer">
                     Сбросить
                   </p>
@@ -487,6 +571,7 @@ const AllEvents = observer(() => {
             ""
           )}
 
+          {shownCards?.length === 0 ? <EmptyCard /> : ""}
           <div className="grid items-start sm:grid-cols-3 grid-cols-1 2xl:grid-cols-4 gap-4 pt-8">
             {isLoaded ? (
               shownCards?.map((item: { layerId: any; objectId: number }) => {

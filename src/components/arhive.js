@@ -150,3 +150,119 @@ xmlns="http://www.w3.org/2000/svg"
   //   setShownCards(shownCards.sort(() => Math.random() - 0.5));
   //   store.setMapView(false);
   // };
+
+
+          {/* <div
+          className={
+            !visibleEl
+              ? "hidden"
+              : "transition ease-in-out delay-100 border-2 hover:border-white rounded border-blue-400 p-2 pt-1 pb-1 hover:bg-blue-200 text-sm text-blue-400 hover:text-black relative inline-block cursor-pointer"
+          }
+          onClick={() => sortByGeom()}
+        >
+          Показать на карте
+        </div> */}
+
+        {/* <span
+          className={
+            visibleEl +
+            " before:block before:absolute before:-inset-1 before:bg-blue-100 relative inline-block font-bold cursor-pointer"
+          }
+          onClick={() => sortByGeom()}
+          onMouseEnter={() => getTooltip(3)}
+        >
+          <span className=" relative leading-normal p-2">
+            {data.attributes.address}
+          </span>
+          <div className="relative text-sm font-light p-1">
+            {data.attributes.place}
+            <div
+              className={
+                tooltip === 3
+                  ? " absolute -top-0 z-20 right-100 font-normal w-40 bg-opacity-90 bg-white text-slate-900 text-sm inline-block before:block before:absolute before:-inset-1 rounded-md shadow-md p-2"
+                  : "hidden"
+              }
+            >
+              Показать на карте и другие события рядом
+            </div>
+          </div>
+        </span> */}
+
+
+          // const sortSoonEvents = () => {
+  //   let soonEvents: { objectId: string | Number | null }[] = [];
+  //   const now = new Date().getDate();
+  //   shownEvents.map((item: any) => {
+  //     const day = new Date(item.attributes.date_to).getDate();
+  //     if (day === now) {
+  //       soonEvents.push(item);
+  //     }
+  //   });
+
+  //   shownEvents.map((item: any) => {
+  //     const day = new Date(item.attributes.date_to).getDate();
+  //     if (day === now + 1) {
+  //       soonEvents.push(item);
+  //     }
+  //   });
+
+  //   setshownEvents(soonEvents);
+  //   store.setMapView(false);
+  //   store.setСurrentTab(1);
+  //   setFilters(false);
+  //   setResetFilters(true);
+  // };
+
+
+
+
+  
+        {/* <div className="grid items-start sm:grid-cols-3 grid-cols-1 gap-4 pt-4">
+          <div className="w-[200px] ">
+            <a
+              href="https://gde-chto.ru/ru/resourses/news/bloggdechto/news/post-4/"
+              target="_blank"
+            >
+              <div className="hover:drop-shadow-lg cursor-pointer bg-cover w-[200px] h-[130px] rounded-xl bg-[url('https://gde-chto.ru/media/bjnbca2x/artboard-30.png')]"></div>
+            </a>
+            <p className="pt-2 text-sm text-center font-normal">
+              Ночь музеев - 2024 в Новосибирске
+            </p>
+          </div>
+
+          <div className="w-[200px] ">
+            <a
+              href="https://gde-chto.ru/ru/resourses/news/bloggdechto/news/post-3/"
+              target="_blank"
+            >
+              <div className="hover:drop-shadow-lg cursor-pointer bg-cover w-[200px] h-[130px] rounded-xl bg-[url('https://gde-chto.ru/media/it4pswjk/ek2o690vkqe.jpg')]"></div>
+            </a>
+            <p className="pt-2 text-sm text-center font-normal">
+              Новосибирск событийный: как найти или создать мероприятие на карте
+            </p>
+          </div>
+
+          <div className="w-[200px] ">
+            <a
+              href="https://gde-chto.ru/ru/resourses/news/bloggdechto/news/post-2/"
+              target="_blank"
+            >
+              <div className="hover:drop-shadow-lg cursor-pointer bg-cover w-[200px] h-[130px] rounded-xl bg-[url('https://gde-chto.ru/media/5m3cbp4y/bmsn750hltw.jpg')]"></div>
+            </a>
+            <p className="pt-2 text-sm text-center font-normal">
+              Интерактивная карта мероприятий «ГдеЧто»
+            </p>
+          </div>
+        </div> */}
+        {/* <p
+          onClick={() => store.setLayerIds(105)}
+          className="fixed bottom-10 right-28 text-gray-700 text-sm"
+        >
+          Архив
+        </p>
+        <p
+          onClick={() => store.setLayerIds(20100)}
+          className="fixed bottom-10 right-10 text-gray-700 text-sm"
+        >
+          All Ads
+        </p> */}

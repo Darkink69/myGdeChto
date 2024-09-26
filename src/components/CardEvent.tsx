@@ -29,7 +29,7 @@ const CardEvent = observer(({ data }: any) => {
   const [visibleEl, setVisibleEl] = useState("hidden");
   const [fav, setFav] = useState(false);
   // const [visibleTooltip, setVisibleTooltip] = useState("hidden");
-  const [tooltip, setTooltip] = useState(0);
+  // const [tooltip, setTooltip] = useState(0);
   const [dateEl, setDateEl] = useState(
     store.styleDateEl + "before:bg-sky-800 text-white"
   );
@@ -145,36 +145,37 @@ const CardEvent = observer(({ data }: any) => {
     setHyperlinks();
   };
 
-  const getTooltip = (num: number) => {
-    setTooltip(num);
-    const day = new Date(data.attributes.date_to);
-    setDateText(days[day.getDay()]);
-    setTimeout(() => {
-      setDateText(dateText);
-      setTooltip(0);
-    }, 1500);
-  };
+  // const getTooltip = (num: number) => {
+  //   setTooltip(num);
+  //   const day = new Date(data.attributes.date_to);
+  //   setDateText(days[day.getDay()]);
+  //   setTimeout(() => {
+  //     setDateText(dateText);
+  //     setTooltip(0);
+  //   }, 1500);
+  // };
 
-  const sortByDate = () => {
-    // store.dataFilter = new Date(data.attributes.date_to).getDate();
-    const dataFilter = new Date(data.attributes.date_to).getDate();
-    store.setDataFilter(dataFilter);
-    store.setСurrentTab(99);
-  };
+  // const sortByDate = () => {
+  //   // store.dataFilter = new Date(data.attributes.date_to).getDate();
+  //   const dataFilter = new Date(data.attributes.date_to).getDate();
+  //   store.setDataFilter(dataFilter);
+  //   store.setСurrentTab(99);
+  // };
 
   const sortByGeom = () => {
     const eventLat = data.attributes.geom_lat;
     const eventLong = data.attributes.geom_long;
     store.setCoordEvent(eventLat, eventLong);
     store.setСurrentTab(99);
+    // store.setMapView(false);
     store.setMapView(true);
 
     store.setCurrentObjectId(data.objectId);
-    const scale = "36112";
+    const scale = "2256";
     store.setCoords(data.attributes.geom_lat, data.attributes.geom_long, scale);
     // store.x = data.attributes.geom_lat;
     // store.y = data.attributes.geom_long;
-    // store.scale = "2256";
+    // store.scale = "36112";
   };
 
   const sortByType = () => {
@@ -248,10 +249,10 @@ const CardEvent = observer(({ data }: any) => {
         <h1
           className="relative font-sans sm:text-xl text-base font-bold text-sky-700 cursor-pointer -mt-2 sm:mt-0 pb-4"
           onClick={() => getFullCard()}
-          onMouseEnter={() => getTooltip(1)}
+          // onMouseEnter={() => getTooltip(1)}
         >
           {data.attributes.name}
-          <div
+          {/* <div
             className={
               tooltip === 1
                 ? " absolute -top-10 right-100 font-normal text-slate-900 text-sm bg-opacity-90 bg-white inline-block before:block before:absolute before:-inset-1 shadow-md p-2"
@@ -259,16 +260,16 @@ const CardEvent = observer(({ data }: any) => {
             }
           >
             Подробнее
-          </div>
+          </div> */}
         </h1>
 
         <span
           className={dateEl}
-          onClick={() => sortByDate()}
-          onMouseEnter={() => getTooltip(2)}
+          // onClick={() => sortByDate()}
+          // onMouseEnter={() => getTooltip(2)}
         >
           <span className="relative leading-normal p-2">{dateText}</span>
-          <div
+          {/* <div
             className={
               tooltip === 2
                 ? "absolute -top-10 z-10 right-100 font-normal bg-opacity-90 bg-white w-40 text-slate-900 text-sm inline-block before:block before:absolute before:-inset-1 shadow-md p-2"
@@ -276,7 +277,7 @@ const CardEvent = observer(({ data }: any) => {
             }
           >
             Показать все события в этот день
-          </div>
+          </div> */}
         </span>
 
         <p className="text-sm sm:text-base pt-1">{data.attributes.text_time}</p>
@@ -360,39 +361,12 @@ const CardEvent = observer(({ data }: any) => {
 
         <div
           className={
-            !visibleEl
-              ? "hidden"
-              : "transition ease-in-out delay-100 border-2 hover:border-white rounded border-blue-400 p-2 pt-1 pb-1 hover:bg-blue-200 text-sm text-blue-400 hover:text-black relative inline-block cursor-pointer"
+            "transition ease-in-out delay-100 border-2 hover:border-white rounded border-blue-400 p-2 pt-1 pb-1 hover:bg-blue-200 text-sm text-blue-400 hover:text-black relative inline-block cursor-pointer"
           }
           onClick={() => sortByGeom()}
         >
           Показать на карте
         </div>
-
-        <span
-          className={
-            visibleEl +
-            " before:block before:absolute before:-inset-1 before:bg-blue-100 relative inline-block font-bold cursor-pointer"
-          }
-          onClick={() => sortByGeom()}
-          onMouseEnter={() => getTooltip(3)}
-        >
-          <span className=" relative leading-normal p-2">
-            {data.attributes.address}
-          </span>
-          <div className="relative text-sm font-light p-1">
-            {data.attributes.place}
-            <div
-              className={
-                tooltip === 3
-                  ? " absolute -top-0 z-20 right-100 font-normal w-40 bg-opacity-90 bg-white text-slate-900 text-sm inline-block before:block before:absolute before:-inset-1 rounded-md shadow-md p-2"
-                  : "hidden"
-              }
-            >
-              Показать на карте и другие события рядом
-            </div>
-          </div>
-        </span>
 
         <div
           className="relative cursor-pointer"
@@ -430,7 +404,7 @@ const CardEvent = observer(({ data }: any) => {
             </svg>
           )}
 
-          <div
+          {/* <div
             className={
               tooltip === 4
                 ? " absolute -top-0 right-10 font-normal text-slate-900 text-sm bg-opacity-90 bg-white inline-block before:block before:absolute before:-inset-1 rounded-md shadow-md p-2"
@@ -438,7 +412,7 @@ const CardEvent = observer(({ data }: any) => {
             }
           >
             Добавить в Избранное
-          </div>
+          </div> */}
         </div>
       </div>
     </>

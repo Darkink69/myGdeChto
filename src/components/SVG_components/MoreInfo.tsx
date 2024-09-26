@@ -1,7 +1,7 @@
 export default function MoreInfo() {
   return (
     <svg
-      className="absolute z-10 inset-x-1/4 inset-y-1/4 opacity-50 hover:opacity-100"
+      className="absolute z-10 ml-1 inset-x-1/4 inset-y-1/4 opacity-50 hover:opacity-100"
       width="143"
       height="143"
       viewBox="0 0 143 143"

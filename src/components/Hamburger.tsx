@@ -76,56 +76,6 @@ const Menu = observer(() => {
             Блог
           </a>
         </p>
-
-        {/* <div className="grid items-start sm:grid-cols-3 grid-cols-1 gap-4 pt-4">
-          <div className="w-[200px] ">
-            <a
-              href="https://gde-chto.ru/ru/resourses/news/bloggdechto/news/post-4/"
-              target="_blank"
-            >
-              <div className="hover:drop-shadow-lg cursor-pointer bg-cover w-[200px] h-[130px] rounded-xl bg-[url('https://gde-chto.ru/media/bjnbca2x/artboard-30.png')]"></div>
-            </a>
-            <p className="pt-2 text-sm text-center font-normal">
-              Ночь музеев - 2024 в Новосибирске
-            </p>
-          </div>
-
-          <div className="w-[200px] ">
-            <a
-              href="https://gde-chto.ru/ru/resourses/news/bloggdechto/news/post-3/"
-              target="_blank"
-            >
-              <div className="hover:drop-shadow-lg cursor-pointer bg-cover w-[200px] h-[130px] rounded-xl bg-[url('https://gde-chto.ru/media/it4pswjk/ek2o690vkqe.jpg')]"></div>
-            </a>
-            <p className="pt-2 text-sm text-center font-normal">
-              Новосибирск событийный: как найти или создать мероприятие на карте
-            </p>
-          </div>
-
-          <div className="w-[200px] ">
-            <a
-              href="https://gde-chto.ru/ru/resourses/news/bloggdechto/news/post-2/"
-              target="_blank"
-            >
-              <div className="hover:drop-shadow-lg cursor-pointer bg-cover w-[200px] h-[130px] rounded-xl bg-[url('https://gde-chto.ru/media/5m3cbp4y/bmsn750hltw.jpg')]"></div>
-            </a>
-            <p className="pt-2 text-sm text-center font-normal">
-              Интерактивная карта мероприятий «ГдеЧто»
-            </p>
-          </div>
-        </div> */}
-        <p
-          onClick={() => store.setLayerIds(105)}
-          className="fixed bottom-10 right-28 text-gray-700 text-sm"
-        >
-          Архив
-        </p>
-        <p
-          onClick={() => store.setLayerIds(20100)}
-          className="fixed bottom-10 right-10 text-gray-700 text-sm"
-        >
-          All Ads
-        </p>
       </div>
     </>
   );
