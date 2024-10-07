@@ -1,6 +1,6 @@
 export default function EmptyCard() {
   return (
-    <div className="absolute top-[30%] left-2/4 -ml-20">
+    <div className="pt-8 relative left-2/4">
       <svg width="172" height="214" viewBox="0 0 172 214" fill="none">
         <g opacity="0.75">
           <circle cx="100.5" cy="122.5" r="71.5" fill="#D9D9D9" />

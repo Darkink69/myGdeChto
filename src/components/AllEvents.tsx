@@ -12,7 +12,8 @@ import FilterIcon from "./SVG_components/Filter";
 import EmptyCard from "./SVG_components/EmptyCard";
 import SortByDate from "./SVG_components/SortByDate";
 import ShuffleByDate from "./SVG_components/SortByDateShuffle";
-import Day from "./DayFilter";
+// import Day from "./DayFilter";
+import Type from "./TypeFilter";
 const { Search } = Input;
 
 const AllEvents = observer(() => {
@@ -24,11 +25,12 @@ const AllEvents = observer(() => {
   const [resetFilters, setResetFilters] = useState(false);
   const [filters, setFilters] = useState(false);
   // const [typesFilters, setTypesFilters] = useState([0]);
-  const [typesFilters, setTypesFilters] = useState([0]);
+  // const [typesFilters, setTypesFilters] = useState([0]);
   const [isLoaded, setIsloaded] = useState(false);
   const allEv = useRef<any>(null);
 
   const jsonFetch = () => {
+    console.log("FETCH!");
     fetch(
       `https://gde-chto.ru/elitegis/rest/services/${
         store.cities[store.currentCity]
@@ -42,6 +44,7 @@ const AllEvents = observer(() => {
   };
 
   const sortData = () => {
+    console.log("SORTDATA!");
     let events: { layerId: Number | null }[] = [];
     let ads: { layerId: Number | null }[] = [];
     data?.map((item: { layerId: Number | null }) => {
@@ -51,20 +54,42 @@ const AllEvents = observer(() => {
       if (item.layerId === 201) {
         ads.push(item);
       }
-      setAllEvents(events);
-      // setAllAds(ads);
-      setIsloaded(true);
-      setShownCards(events.sort(() => Math.random() - 0.5));
-      // setShownCards(events);
     });
 
-    setFilters(false);
-    setTypesFilters([0]);
-    setResetFilters(false);
-    store.setСurrentTab(0);
-    store.setSorted(0);
-    store.setDatesFilters([]);
-    store.setData(events.length, ads.length);
+    setAllEvents(events);
+    // console.log(events?.length, "events.length!!");
+
+    // setShownCards(events);
+    // setShownCards(events?.sort(() => Math.random() - 0.5));
+    // console.log(shownCards?.length, "shownCards.length!!");
+
+    // // if (shownCards) {
+    // //   console.log(isLoaded, "shownCards");
+    // //   setIsloaded(true);
+    // // }
+    // setIsloaded(true);
+
+    // let checkFav: any[] = [];
+    // events?.map((item: any) => {
+    //   if (store.favoriteEvents.includes(item.objectId)) {
+    //     checkFav.push(item.objectId);
+    //     localStorage.setItem("favoriteEvents", JSON.stringify(checkFav));
+    //   }
+    // });
+    // store.checkEvents();
+
+    // setFilters(false);
+    // store.setTypeFilters([0]);
+    // setResetFilters(false);
+    // store.setСurrentTab(0);
+    // store.setSorted(0);
+    // // setIsloaded(true);
+    // // store.setDatesFilters([]);
+    // // console.log(store.sourceCity, "source city!!", store.currentCity);
+    // store.setData(events.length, ads.length);
+
+    // // setShownCards(allEvents);
+    // store.setMapView(false);
   };
 
   const sortFavorites = () => {
@@ -76,7 +101,7 @@ const AllEvents = observer(() => {
     });
     setShownCards(shownEvents);
     store.setСurrentTab(2);
-    setResetFilters(true);
+    setResetFilters(false);
     setFilters(false);
     store.setMapView(false);
     store.setSorted(0);
@@ -84,28 +109,32 @@ const AllEvents = observer(() => {
 
   const filterEvents = () => {
     setFilters(true);
+    // store.setDatesFilters([
+    //   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+    //   22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+    // ]);
     store.setСurrentTab(3);
     setResetFilters(true);
     store.setMapView(false);
     store.setSorted(0);
   };
 
-  const useFilterEvents = (typeEvent: number) => {
-    let currentFilters = [];
-    if (typesFilters.length === 1) {
-      currentFilters.push(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15);
-    }
-    currentFilters.push(...typesFilters);
-    if (!currentFilters.includes(typeEvent)) {
-      currentFilters.push(typeEvent);
-      // setStyleFilter("hidden");
-      setTypesFilters(currentFilters);
-    } else {
-      const delArray = currentFilters.filter((number) => number !== typeEvent);
-      setTypesFilters(delArray);
-    }
-    store.setSorted(0);
-  };
+  // const useFilterEvents = (typeEvent: number) => {
+  //   let currentFilters = [];
+  //   if (typesFilters.length === 1) {
+  //     currentFilters.push(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15);
+  //   }
+  //   currentFilters.push(...typesFilters);
+  //   if (!currentFilters.includes(typeEvent)) {
+  //     currentFilters.push(typeEvent);
+  //     // setStyleFilter("hidden");
+  //     setTypesFilters(currentFilters);
+  //   } else {
+  //     const delArray = currentFilters.filter((number) => number !== typeEvent);
+  //     setTypesFilters(delArray);
+  //   }
+  //   store.setSorted(0);
+  // };
 
   const onSearch = (value: string, _e: any) => {
     console.log(value);
@@ -133,13 +162,13 @@ const AllEvents = observer(() => {
       })
       .catch((error) => console.error(error));
     store.setСurrentTab(99);
-    setResetFilters(true);
+    setResetFilters(false);
+    setFilters(false);
+    store.setTypeFilters([0]);
     store.setMapView(false);
   };
 
   const sortByDate = () => {
-    console.log("Sort!");
-
     if (store.sorted === 1) {
       shownCards?.sort(
         (a: any, b: any) => a.attributes.date_from - b.attributes.date_from
@@ -150,21 +179,53 @@ const AllEvents = observer(() => {
 
     let checkArray: any[] = [];
     shownCards?.map((item: any) => {
-      // console.log(item);
       checkArray.push(item);
     });
     setShownCards(checkArray);
   };
 
   useEffect(() => {
+    setIsloaded(false);
+    setData(null);
+    setShownCards(null);
+    setAllEvents(null);
     jsonFetch();
     store.checkEvents();
     document.title = `ГдеЧто. ${store.titleCities[store.currentCity]}`;
   }, [store.currentCity]);
 
   useEffect(() => {
-    sortData();
+    // setIsloaded(false);
+    // console.log(data, "DATA!!");
+    if (data !== null) {
+      // console.log("data not null!!!!!!");
+      sortData();
+    }
   }, [data]);
+
+  useEffect(() => {
+    setShownCards(allEvents?.sort(() => Math.random() - 0.5));
+    // console.log(shownCards?.length, "shownCards.length!!");
+
+    setIsloaded(true);
+
+    let checkFav: any[] = [];
+    allEvents?.map((item: any) => {
+      if (store.favoriteEvents.includes(item.objectId)) {
+        checkFav.push(item.objectId);
+        localStorage.setItem("favoriteEvents", JSON.stringify(checkFav));
+      }
+    });
+    store.checkEvents();
+
+    setFilters(false);
+    store.setTypeFilters([0]);
+    setResetFilters(false);
+    store.setСurrentTab(0);
+    store.setSorted(0);
+    store.setData(allEvents?.length, allEvents?.length);
+    store.setMapView(true);
+  }, [allEvents]);
 
   // useEffect(() => {
   //   sortEvents();
@@ -217,54 +278,40 @@ const AllEvents = observer(() => {
   }, [store.currentType]);
 
   useEffect(() => {
-    let typeEvents: { attributes: any; objectId: string | Number | null }[] =
+    // console.log(store.datesFilters, "store days");
+    let cardsEvents: { attributes: any; objectId: string | Number | null }[] =
       [];
-    if (store.datesFilters.length === 0) {
-      console.log("store.datesFilters.length === 1");
-      store.setDatesFilters([0]);
+    if (store.datesFilters.length === 30) {
+      store.setDatesFilters([]);
+      store.setDatesFilters([store.dateEvent]);
     }
 
     allEvents?.map(
       (item: { attributes: any; objectId: string | Number | null }) => {
         const dateEvent = new Date(item.attributes.date_from).getDate();
         if (
-          !typesFilters.includes(item.attributes.type) &&
-          !store.datesFilters.includes(dateEvent)
+          !store.typesFilters.includes(item.attributes.type) &&
+          store.datesFilters.includes(dateEvent)
         ) {
-          typeEvents.push(item);
+          cardsEvents.push(item);
         }
       }
     );
-    setShownCards(typeEvents);
-    console.log(typeEvents.length, "- найдено");
-  }, [typesFilters, store.datesFilters]);
+    setShownCards(cardsEvents);
+    console.log(cardsEvents.length, "- найдено ");
+  }, [store.typesFilters, store.datesFilters]);
 
   useEffect(() => {
-    console.log("loading...");
-
+    // console.log(shownCards?.length, "shownCards...");
     // console.log("use!");
-    // if (shownCards?.length === 0) {
-    //   console.log("Ничего нету...");
-    // }
+    if (shownCards?.length === 0) {
+      console.log("Ничего нету...");
+    }
   }, [shownCards]);
 
   useEffect(() => {
     sortByDate();
   }, [store.sorted]);
-
-  // useEffect(() => {
-  //   console.log(store.datesFilters);
-  //   let daysEvents: { attributes: any; objectId: string | Number | null }[] =
-  //     [];
-  //   shownCards?.map((item: any) => {
-  //     const dateEvent = new Date(item.attributes.date_from).getDate();
-  //     if (store.datesFilters.includes(dateEvent)) {
-  //       daysEvents.push(item);
-  //     }
-  //   });
-  //   setShownCards(daysEvents);
-
-  // }, [store.datesFilters]);
 
   return (
     <>
@@ -275,14 +322,24 @@ const AllEvents = observer(() => {
       {store.cardsEventsView && (
         <div
           ref={allEv}
+          // className={
+          //   store.mapView
+          //     ? "fixed container mx-auto sm:top-[90%] top-[100%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+          //     : "fixed container mx-auto top-[10%] overflow-x-hidden overflow-scroll w-11/12 h-[95%]"
+          // }
           className={
             store.mapView
               ? "fixed container mx-auto sm:top-[90%] top-[100%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
-              : "fixed container mx-auto top-[26%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+              : "fixed container mx-auto top-[25%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
           }
         >
           {store.mapView ? (
-            <div onClick={() => store.setMapView(store.mapView ? false : true)}>
+            <div
+              // onMouseEnter={() =>
+              //   store.setMapView(store.mapView ? false : true)
+              // }
+              onClick={() => store.setMapView(store.mapView ? false : true)}
+            >
               <ArrowUp />
             </div>
           ) : (
@@ -292,7 +349,7 @@ const AllEvents = observer(() => {
           )}
           <div
             className={
-              "flex z-40 gap-2 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
+              "flex z-40 gap-4 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
             }
           >
             <h1
@@ -305,18 +362,21 @@ const AllEvents = observer(() => {
               onClick={() => {
                 store.setСurrentTab(0);
                 setFilters(false);
-                // setResetFilters(true);
-                setTypesFilters([0]);
+                setResetFilters(false);
+                store.setTypeFilters([0]);
                 // setIsloaded(false);
                 // setShownCards(null);
                 setShownCards(allEvents);
                 // setIsloaded(true);
                 store.setMapView(false);
-                // store.setDatesFilters([]);
+                store.setDatesFilters([
+                  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                  19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+                ]);
                 store.setSorted(0);
               }}
             >
-              Все мероприятия
+              Мероприятия
             </h1>
             <span className="-left-4 p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-slate-400">
               {store.allEvents}
@@ -331,11 +391,11 @@ const AllEvents = observer(() => {
               }
               onClick={() => sortFavorites()}
             >
-              Избранные
+              Избранное
             </p>
 
             {store.favoriteEvents.length && (
-              <span className="-left-5 p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-sky-400">
+              <span className="-left-4 p-2 pt-1 pb-1 rounded-full inline-block relative text-xs font-bold text-white bg-sky-400">
                 {store.favoriteEvents.length}
               </span>
             )}
@@ -344,7 +404,7 @@ const AllEvents = observer(() => {
               className=""
               placeholder="Поиск мероприятий"
               onSearch={onSearch}
-              style={{ width: 200 }}
+              style={{ width: 170 }}
             />
 
             <div onClick={() => filterEvents()}>
@@ -371,10 +431,7 @@ const AllEvents = observer(() => {
             </p>
 
             {store.sorted === 0 ? (
-              <div
-                // className="relative -left-3"
-                onClick={() => store.setSorted(1)}
-              >
+              <div onClick={() => store.setSorted(1)}>
                 <SortByDate />
               </div>
             ) : (
@@ -382,186 +439,52 @@ const AllEvents = observer(() => {
                 <ShuffleByDate />
               </div>
             )}
-
-            {/* <div className="relative -left-3">
-              <FilterIcon />
-            </div> */}
           </div>
 
-          {filters ? (
-            <div className="mt-8 md:w-2/4 w-full">
+          {/* {filters ? (
+            <div className="mt-4">
+              <p
+                className="flex justify-center cursor-pointer sm:justify-normal font-bold text-sky-400"
+                onClick={() =>
+                  allEv.current.scrollTo({
+                    top: 600,
+                    left: 0,
+                    behavior: "smooth",
+                  })
+                }
+              >
+                Найдено мероприятий: {shownCards.length}
+              </p>
+            </div>
+          ) : (
+            ""
+          )} */}
+
+          {/* {filters ? (
+            <div className="mt-4 md:w-1/6 w-full">
               <Day />
             </div>
           ) : (
             ""
-          )}
+          )} */}
 
           {filters ? (
-            <div className="pt-8 flex gap-1 flex-wrap">
-              <p
-                onClick={() => useFilterEvents(1)}
-                className={
-                  typesFilters.includes(1)
-                    ? store.styleFilter + " text-[#7777F7] border-[#7777F7]"
-                    : store.styleFilter +
-                      " text-white border-[#7777F7] bg-[#7777F7]"
-                }
-              >
-                Музыка
-              </p>
-              <p
-                onClick={() => useFilterEvents(2)}
-                className={
-                  typesFilters.includes(2)
-                    ? store.styleFilter + " text-[#507077] border-[#507077]"
-                    : store.styleFilter +
-                      " text-white border-[#507077] bg-[#507077]"
-                }
-              >
-                Выставки
-              </p>
-              <p
-                onClick={() => useFilterEvents(3)}
-                className={
-                  typesFilters.includes(3)
-                    ? store.styleFilter + " text-[#B74890] border-[#B74890]"
-                    : store.styleFilter +
-                      " text-white border-[#B74890] bg-[#B74890]"
-                }
-              >
-                Праздники
-              </p>
-              <p
-                onClick={() => useFilterEvents(4)}
-                className={
-                  typesFilters.includes(4)
-                    ? store.styleFilter + " text-[#8CC63F] border-[#8CC63F]"
-                    : store.styleFilter +
-                      " text-white border-[#8CC63F] bg-[#8CC63F]"
-                }
-              >
-                Дети
-              </p>
-              <p
-                onClick={() => useFilterEvents(5)}
-                className={
-                  typesFilters.includes(5)
-                    ? store.styleFilter + " text-[#FC5454] border-[#FC5454]"
-                    : store.styleFilter +
-                      " text-white border-[#FC5454] bg-[#FC5454]"
-                }
-              >
-                Спорт
-              </p>
-              <p
-                onClick={() => useFilterEvents(6)}
-                className={
-                  typesFilters.includes(6)
-                    ? store.styleFilter + " text-[#80CCFF] border-[#80CCFF]"
-                    : store.styleFilter +
-                      " text-white border-[#80CCFF] bg-[#80CCFF]"
-                }
-              >
-                Курсы
-              </p>
-              <p
-                onClick={() => useFilterEvents(7)}
-                className={
-                  typesFilters.includes(7)
-                    ? store.styleFilter + " text-[#58AAAB] border-[#58AAAB]"
-                    : store.styleFilter +
-                      " text-white border-[#58AAAB] bg-[#58AAAB]"
-                }
-              >
-                Танцы
-              </p>
-              <p
-                onClick={() => useFilterEvents(8)}
-                className={
-                  typesFilters.includes(8)
-                    ? store.styleFilter + " text-[#FBB03B] border-[#FBB03B]"
-                    : store.styleFilter +
-                      " text-white border-[#FBB03B] bg-[#FBB03B]"
-                }
-              >
-                Еда
-              </p>
-              <p
-                onClick={() => useFilterEvents(9)}
-                className={
-                  typesFilters.includes(9)
-                    ? store.styleFilter + " text-[#FF6B57] border-[#FF6B57]"
-                    : store.styleFilter +
-                      " text-white border-[#FF6B57] bg-[#FF6B57]"
-                }
-              >
-                Игры
-              </p>
-              <p
-                onClick={() => useFilterEvents(10)}
-                className={
-                  typesFilters.includes(10)
-                    ? store.styleFilter + " text-[#7D6793] border-[#7D6793]"
-                    : store.styleFilter +
-                      " text-white border-[#7D6793] bg-[#7D6793]"
-                }
-              >
-                Ярмарки
-              </p>
-              <p
-                onClick={() => useFilterEvents(12)}
-                className={
-                  typesFilters.includes(12)
-                    ? store.styleFilter + " text-[#2ECC71] border-[#2ECC71]"
-                    : store.styleFilter +
-                      " text-white border-[#2ECC71] bg-[#2ECC71]"
-                }
-              >
-                Экскурсии
-              </p>
-              <p
-                onClick={() => useFilterEvents(13)}
-                className={
-                  typesFilters.includes(13)
-                    ? store.styleFilter + " text-[#157764] border-[#157764]"
-                    : store.styleFilter +
-                      " text-white border-[#157764] bg-[#157764]"
-                }
-              >
-                Театр Кино
-              </p>
-              <p
-                onClick={() => useFilterEvents(14)}
-                className={
-                  typesFilters.includes(14)
-                    ? store.styleFilter + " text-[#FF978F] border-[#FF978F]"
-                    : store.styleFilter +
-                      " text-white border-[#FF978F] bg-[#FF978F]"
-                }
-              >
-                Тренировки
-              </p>
-              <p
-                onClick={() => useFilterEvents(15)}
-                className={
-                  typesFilters.includes(15)
-                    ? store.styleFilter + " text-[#F458F9] border-[#F458F9]"
-                    : store.styleFilter +
-                      " text-white border-[#F458F9] bg-[#F458F9]"
-                }
-              >
-                Вечеринки
-              </p>
+            <div className="pt-6 flex gap-1 flex-wrap">
+              <Type />
               {resetFilters && (
                 <div
                   onClick={() => {
                     setShownCards(allEvents);
-                    setTypesFilters([0]);
+                    store.setTypeFilters([0]);
+                    store.setDatesFilters([
+                      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                      18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+                    ]);
                     store.setSorted(0);
-                    // console.log(typesFilters);
+                    // setIsloaded(false);
                   }}
                 >
-                  <p className="pl-4 pr-4 pt-1 pb-1 rounded-full inline-block relative border-2 border-red-600 font-bold text-xs text-red-600 hover:bg-red-600 hover:text-white cursor-pointer">
+                  <p className="pl-8 pr-8 pt-1 pb-1 rounded-full inline-block relative border-2 border-red-600 font-bold text-xs text-red-600 hover:bg-red-600 hover:text-white cursor-pointer">
                     Сбросить
                   </p>
                 </div>
@@ -578,9 +501,6 @@ const AllEvents = observer(() => {
                 return <CardEvent data={item} key={item.objectId} />;
               })
             ) : (
-              // <p className="font-mono text-center z-50 text-slate-600 decoration-solid">
-              //   Загрузка..
-              // </p>
               <img
                 className="w-6 h-6 opacity-50 animate-spin"
                 src="https://gde-chto.ru/catalog/css/images/common/loader_wait_snake_black_16x16.svg"
@@ -592,10 +512,20 @@ const AllEvents = observer(() => {
           <div
             className={
               store.mapView
-                ? "fixed container mx-auto sm:h-[20%] h-[10%] -z-10 rounded-3xl -bottom-10 -ml-4 bg-white opacity-95 drop-shadow-lg"
-                : "fixed container mx-auto h-[84%] -z-10 rounded-3xl -bottom-10 -ml-4 bg-white opacity-95 drop-shadow-lg"
+                ? "fixed container mx-auto sm:h-[20%] h-[10%] -z-10 rounded-3xl -bottom-10 -ml-4 bg-white drop-shadow-lg"
+                : "fixed container mx-auto h-[84%] -z-10 rounded-3xl -bottom-10 -ml-4 bg-white drop-shadow-lg"
             }
           ></div>
+
+          <div
+            onClick={() => store.setMapView(store.mapView ? false : true)}
+            className={
+              store.mapView
+                ? ""
+                : "cursor-pointer opacity-0 fixed container mx-auto h-[100%] -z-20 rounded-3xl -bottom-10 -ml-4 bg-black drop-shadow-lg"
+            }
+          ></div>
+
           {!store.mapView && (
             <div
               className="fixed bottom-0 left-0 p-4 z-10 cursor-pointer hover:animate-bounce"

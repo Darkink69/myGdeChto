@@ -16,15 +16,15 @@ const CardEvent = observer(({ data }: any) => {
   ];
   let rndGif = Math.floor(Math.random() * waitGifs.length);
 
-  const days = [
-    "ВОСКРЕСЕНИЕ",
-    "ПОНЕДЕЛЬНИК",
-    "ВТОРНИК",
-    "СРЕДА",
-    "ЧЕТВЕРГ",
-    "ПЯТНИЦА",
-    "СУББОТА",
-  ];
+  // const days = [
+  //   "ВОСКРЕСЕНИЕ",
+  //   "ПОНЕДЕЛЬНИК",
+  //   "ВТОРНИК",
+  //   "СРЕДА",
+  //   "ЧЕТВЕРГ",
+  //   "ПЯТНИЦА",
+  //   "СУББОТА",
+  // ];
 
   const [visibleEl, setVisibleEl] = useState("hidden");
   const [fav, setFav] = useState(false);
@@ -314,7 +314,8 @@ const CardEvent = observer(({ data }: any) => {
         <Image.PreviewGroup items={imgLinks}>
           <Image
             className={visibleEl + " pt-4 pb-4 w-full"}
-            // width={200}
+            // width={100}
+            fallback={"#"}
             src={imgLinks[0]}
           />
         </Image.PreviewGroup>

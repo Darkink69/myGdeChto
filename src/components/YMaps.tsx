@@ -8,10 +8,9 @@ const AllMap = observer(() => {
   // const setMapSize = () => {
   //   setH(800);
   // };
-
-  // useEffect(() => {
-  //   store.sourceCity = `https://gde-chto.ru/catalog/novosibirsk#id=0_102_3678&scale=2256&centerX=82.82839536666872&centerY=54.987864168094596`;
-  // }, [store.x, store.y, store.scale]);
+  // const setLoadingIframe = () => {
+  //   console.log("load!");
+  // };
 
   useEffect(() => {
     if (window.localStorage.getItem("currentBrowserCookieId") == null)
@@ -27,15 +26,17 @@ const AllMap = observer(() => {
     store.setSourceCity(
       `https://gde-chto.ru/catalog/${
         store.sourceCities[store.currentCity]
-      }?mode=iframe&CurrentBrowserCookieId=${window.localStorage.getItem(
-        "currentBrowserCookieId"
-      )}&CurrentUserCookieId=${window.localStorage.getItem(
-        "currentUserCookieId"
-      )}#id=0_${store.layerIds}_${store.currentObjectId}&scale=${
+      }#id=0_${store.layerIds}_${store.currentObjectId}&scale=${
         store.scale
-      }&centerX=${store.x}&centerY=${store.y}&layers=0`
+      }&centerX=${store.defaultCoords[store.currentCity].x}&centerY=${
+        store.defaultCoords[store.currentCity].y
+      }&layers=0`
     );
-  }, [store.x, store.y, store.scale]);
+  }, [
+    store.defaultCoords[store.currentCity].x,
+    store.defaultCoords[store.currentCity].y,
+    store.scale,
+  ]);
 
   useEffect(() => {
     if (window.innerWidth > 2000) {
@@ -49,9 +50,19 @@ const AllMap = observer(() => {
   return (
     <>
       <div className="container sm:pt-20 pt-10 fixed -ml-4">
+        {/* <input onMouseMove="this.value=event.clientX+':'+event.clientY" value="Наведи на меня мышь"> */}
         {/* <p>{window.innerWidth}</p> */}
         {/* <p>{window.innerHeight}</p> */}
-        <iframe src={store.sourceCity} width="100%" height={h}></iframe>
+        {/* <canvas width="300" height="300"></canvas> */}
+        <iframe
+          src={store.sourceCity}
+          width="100%"
+          height={h}
+          // onLoad={() => setLoadingIframe()}
+          // onMouseOver={(e) => console.log(e, e.pageX, e.pageY, "!!")}
+          // onMouseOut={(e) => console.log(e.pageX, e.pageY, "OUT")}
+          // onMouseMove={(e) => console.log(e.pageX, e.pageY, "MM")}
+        ></iframe>
       </div>
     </>
   );

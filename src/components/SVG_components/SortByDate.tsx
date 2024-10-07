@@ -2,7 +2,7 @@ export default function SortByDate() {
   return (
     // <p className={"font-bold text-slate-600 cursor-pointer"}>Сортировка 1</p>
     <svg
-      className="cursor-pointer"
+      className="cursor-pointer hidden sm:block"
       width="32"
       height="32"
       viewBox="0 0 32 32"

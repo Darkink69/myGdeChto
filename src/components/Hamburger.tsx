@@ -1,7 +1,7 @@
 import store from "../store/store";
 import { observer } from "mobx-react-lite";
-// import { useEffect, useRef, useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+// import { useEffect, useState } from "react";
 
 const Menu = observer(() => {
   const getAddEvent = () => {
@@ -10,6 +10,89 @@ const Menu = observer(() => {
     store.setCardsEventsView(false);
   };
 
+  // const [src, setSrc] = useState("");
+
+  // let src = "";
+
+  //
+  const xx = () => {
+    // fetch(
+    //   `https://gde-chto.ru/elitegis/rest/services/stats/statistics/MapServer/102/query?f=json&token=8f23c2b9ab6c48c98f9f9e079f47fd86&returnIdsOnly=false&returnCountOnly=false&returnGeometry=false&returnZ=false&returnM=false&where=(((client_name+is+not+null)+AND+(%22action_week_day%22+IN+(1%2C2%2C3%2C4%2C5%2C6%2C0)))+AND+(%22action_date%22%3E%3D%272024-09-30%27))&orderByFields=%22client_name%22+ASC&groupByFieldsForStatistics=client_name&outStatistics=%5B%7B%22onStatisticField%22%3A%22oid%22%2C%22statisticType%22%3A%22count%22%2C%22outStatisticFieldName%22%3A%22oid_count%22%7D%5D&language=ru`
+    // )
+    //   .then((response) => response.json())
+    //   .then((data) => console.log(data))
+    //   .catch((error) => console.error(error));
+
+    const os = navigator;
+
+    // const userAgent = navigator.userAgent;
+    console.log(os);
+    // navigator.gpu.requestAdapter().then((r) => console.log(r));
+
+    console.log(navigator.language);
+
+    // const displayMediaOptions = {
+    //   video: {
+    //     displaySurface: "browser",
+    //   },
+    //   audio: {
+    //     suppressLocalAudioPlayback: false,
+    //   },
+    //   preferCurrentTab: false,
+    //   selfBrowserSurface: "exclude",
+    //   systemAudio: "include",
+    //   surfaceSwitching: "include",
+    //   monitorTypeSurfaces: "include",
+    // };
+
+    // async function startCapture(displayMediaOptions) {
+    //   let captureStream;
+
+    //   try {
+    //     captureStream = await navigator.mediaDevices.getDisplayMedia(
+    //       displayMediaOptions
+    //     );
+    //   } catch (err) {
+    //     console.error(`Error: ${err}`);
+    //   }
+    //   return captureStream;
+    // }
+
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(showPosition);
+    // } else {
+    //   console.log("Геолокация не поддерживается.");
+    // }
+
+    // function showPosition(position) {
+    // var lat = position.coords.latitude;
+    // var lon = position.coords.longitude;
+    //   console.log(lat, lon);
+    // }
+
+    // button.addEventListener('click', findLocation)
+
+    // if (!navigator.geolocation) {
+    //   console.log("Ваш браузер не дружит с геолокацией...");
+    // } else {
+    //   navigator.geolocation.getCurrentPosition(success);
+    // }
+
+    // function success(position: { coords: { longitude: any; latitude: any } }) {
+    //   const { longitude, latitude } = position.coords;
+    //   store.setCoordEvent(latitude, longitude);
+    //   console.log(latitude, longitude);
+
+    //   setSrc(
+    //     `https://www.openstreetmap.org/export/embed.html?bbox=${longitude}%2C${latitude}&amp;layer=mapnik`
+    //   );
+    // }
+
+    // Если всё плохо, просто напишем об этом
+    // function error() {
+    //   status.textContent = 'Не получается определить вашу геолокацию :('
+    // }
+  };
   // const [isPlaying, setIsPlaying] = useState(false);
   // const ref = useRef<any>(null);
 
@@ -41,7 +124,14 @@ const Menu = observer(() => {
 
   return (
     <>
-      <div className="flex items-center xl:gap-8 gap-2 flex-col sm:pt-40 pt-28 text-sm sm:text-2xl text-white font-bold sm:p-20 p-6">
+      <div
+        className="flex items-center xl:gap-8 gap-2 flex-col sm:pt-40 pt-28 text-sm sm:text-2xl text-white font-bold sm:p-20 p-6"
+        onClick={(e) => console.log(e, e.pageX, e.pageY, "!!")}
+        onBlur={() => console.log("blur!")}
+        onTouchStart={(e) => console.log(e, "touch!")}
+      >
+        {/* <iframe src={src} width="500px" height="300px"></iframe> */}
+        {/* <p>{latitude} {longitude}</p> */}
         {/* <input ref={inputEl} type="text" />
         <button onClick={() => onButtonClick()}>Фокус</button>
         <form onSubmit={handleSubmit}>
@@ -76,6 +166,7 @@ const Menu = observer(() => {
             Блог
           </a>
         </p>
+        <p onClick={() => xx()}>...</p>
       </div>
     </>
   );

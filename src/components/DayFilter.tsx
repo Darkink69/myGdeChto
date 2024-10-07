@@ -1,13 +1,11 @@
-// import store from "../store/store";
 import { observer } from "mobx-react-lite";
 import store from "../store/store";
 // import { useState } from "react";
 
 const Day = observer(() => {
-  // const [datesFilters, setDatesFilters] = useState([0]);
   const now = new Date();
-  let days = [];
-  let daysSecond = [];
+  const daysStyles = [];
+  let daysStylesSecond = [];
   const months = [
     "Январь",
     "Февраль",
@@ -22,7 +20,7 @@ const Day = observer(() => {
     "Ноябрь",
     "Декабрь",
   ];
-  // let daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+  let daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
 
   const daysOfMounth = new Date(
     now.getFullYear(),
@@ -30,121 +28,159 @@ const Day = observer(() => {
     0
   ).getDate();
 
+  let daysHideMounth = daysOfMounth - now.getDate() + 1 - store.daysOfEvents;
+  if (daysHideMounth < 0) daysHideMounth = 0;
+
   const secondDaysMounth =
     store.daysOfEvents - (daysOfMounth - now.getDate() + 1);
 
+  // console.log(String(42).length, "second");
   // console.log(secondDaysMounth, "second");
   // console.log(store.daysOfEvents, "store");
   // console.log(now.getFullYear());
+  // console.log(now.getDay() + 1, "now!");
   // console.log(daysOfMounth);
-  // console.log(
-  //   daysOfWeek[new Date(`${now.getMonth()} 25, ${now.getFullYear()}`).getDay()],
-  //   "week"
-  // );
-  // console.log(new Date(`${now.getFullYear}-09-25`), "w");
 
-  // const days = [
-  //   { d: 24, color: " bg-red-800" },
-  //   { d: 25, color: " bg-pink-400" },
-  //   { d: 26, color: " bg-sky-800" },
-  //   { d: 27, color: " bg-sky-800" },
-  //   { d: 28, color: " bg-yellow-400" },
-  //   { d: 29, color: " bg-yellow-400" },
-  // ];
+  for (let i = now.getDate(); i <= daysOfMounth - daysHideMounth; i++) {
+    const dayWeek =
+      daysOfWeek[new Date(now.getFullYear(), now.getMonth(), i).getDay()];
 
-  for (let i = now.getDate(); i <= daysOfMounth; i++) {
-    // console.log(i);
-    days.push(i);
+    let styleDay = {
+      d: i,
+      elemColor: ` hover:scale-105 cursor-pointer p-2 pt-1 pb-1 mr-1 ${
+        String(i).length === 1 ? "pr-3 pl-3" : ""
+      } rounded-full inline-block relative text-md font-bold border-2 ${
+        dayWeek === "ВС" || dayWeek === "СБ"
+          ? "text-black border-yellow-400 border-2 bg-yellow-400"
+          : "text-white border-sky-800 border-2 bg-sky-800"
+      }`,
+      elemColorPush: ` hover:scale-105 cursor-pointer p-2 pt-1 pb-1 mr-1 ${
+        String(i).length === 1 ? "pr-3 pl-3" : ""
+      } rounded-full inline-block relative text-md font-bold border-2 ${
+        dayWeek === "ВС" || dayWeek === "СБ"
+          ? "text-black border-yellow-400 border-2"
+          : "text-sky-800 border-sky-800 border-2"
+      }`,
+      dayWeek: dayWeek,
+      dwStyle: `text-xs pr-6 ml-3 ${
+        dayWeek === "ВС" || dayWeek === "СБ" ? "text-red-600" : "text-gray-400"
+      } pb-2`,
+    };
+
+    daysStyles.push(styleDay);
   }
 
   for (let i = 1; i <= secondDaysMounth; i++) {
-    daysSecond.push(i);
+    const dayWeek =
+      daysOfWeek[new Date(now.getFullYear(), now.getMonth() + 1, i).getDay()];
+    // console.log(i, dayWeek, "w");
+    let styleDay = {
+      d: i,
+      elemColor: ` hover:scale-105 cursor-pointer p-2 pt-1 pb-1 mr-1 ${
+        String(i).length === 1 ? "pr-3 pl-3" : ""
+      } rounded-full inline-block relative text-md font-bold border-2 ${
+        dayWeek === "ВС" || dayWeek === "СБ"
+          ? "text-black border-yellow-400 border-2 bg-yellow-400"
+          : "text-white border-sky-800 border-2 bg-sky-800"
+      }`,
+      elemColorPush: ` hover:scale-105 cursor-pointer p-2 pt-1 pb-1 mr-1 ${
+        String(i).length === 1 ? "pr-3 pl-3" : ""
+      } rounded-full inline-block relative text-md font-bold border-2 ${
+        dayWeek === "ВС" || dayWeek === "СБ"
+          ? "text-black border-yellow-400 border-2"
+          : "text-sky-800 border-sky-800 border-2"
+      }`,
+      dayWeek: dayWeek,
+      dwStyle: `text-xs pr-6 ml-3 ${
+        dayWeek === "ВС" || dayWeek === "СБ" ? "text-red-600" : "text-gray-400"
+      } pb-2`,
+    };
+
+    daysStylesSecond.push(styleDay);
   }
 
   const useDateFilterEvents = (dateEvent: number) => {
-    console.log(store.datesFilters);
+    store.setDateEvent(dateEvent);
     let currentDates: number[] = [];
-    // if (currentDates.length === 0) {
-
-    // }
 
     currentDates.push(...store.datesFilters);
     if (!currentDates.includes(dateEvent)) {
       currentDates.push(dateEvent);
-      // setStyleFilter("hidden");
       store.setDatesFilters(currentDates);
     } else {
       const delArray = currentDates.filter((number) => number !== dateEvent);
       store.setDatesFilters(delArray);
     }
     store.setSorted(0);
-    console.log(currentDates);
   };
-
-  // const setDays = (i: number) => {
-  //   console.log("day -", i);
-  // };
 
   return (
     <>
-      <div className="grid grid-cols-2">
+      {/* <div className="grid grid-flow-row-dense grid-cols-2"> */}
+      <div className="">
         <div>
           <div className="text-sx text-gray-400 pb-2">
             {months[now.getMonth()]}
           </div>
-          {days.map((item) => {
-            // console.log(item);
-            return (
-              <div
-                onClick={() => useDateFilterEvents(item)}
-                // className={
-                //   "cursor-pointer p-2 pt-1 pb-1 mr-1 rounded-full inline-block relative text-md font-bold text-white" +
-                //   " bg-sky-800"
-                // }
-                className={
-                  store.datesFilters.includes(item)
-                    ? "cursor-pointer p-2 pt-1 pb-1 mr-1 rounded-full inline-block relative text-md font-bold text-sky-800 border-sky-800 border-2"
-                    : "cursor-pointer p-2 pt-1 pb-1 mr-1 rounded-full inline-block relative text-md font-bold text-white border-white border-2 bg-sky-800"
-                }
-              >
-                {item}
-                {/* <div className="text-xs font-thin text-gray-400">
-                  {daysOfWeek[now.getDay()]}
-                </div> */}
-              </div>
-            );
-          })}
-
-          {/* {days.map((item) => {
-            // console.log(item);
-            return (
-              <div className="text-xs font-thin text-gray-400">
-                {daysOfWeek[now.getDay()]} {item}
-              </div>
-            );
-          })} */}
-        </div>
-
-        <div>
-          <div className="text-sx text-gray-400 pb-2">
-            {months[now.getMonth() + 1]}
+          <div className="flex sm:flex-nowrap flex-wrap">
+            {daysStyles.map((item) => {
+              return (
+                <div>
+                  <div
+                    onClick={() => useDateFilterEvents(item.d)}
+                    className={
+                      store.datesFilters.includes(item.d)
+                        ? item.elemColor
+                        : item.elemColorPush
+                    }
+                  >
+                    {item.d}
+                  </div>
+                  <div
+                    onClick={() => useDateFilterEvents(item.d)}
+                    className={item.dwStyle}
+                  >
+                    {item.dayWeek}
+                  </div>
+                </div>
+              );
+            })}
           </div>
-
-          {daysSecond.map((item) => {
-            return (
-              <div
-                onClick={() => useDateFilterEvents(item)}
-                className={
-                  store.datesFilters.includes(item)
-                    ? "cursor-pointer p-2 pt-1 pb-1 mr-1 pr-3 pl-3 rounded-full inline-block relative text-md font-bold text-sky-800 border-sky-800 border-2"
-                    : "cursor-pointer p-2 pt-1 pb-1 mr-1 pr-3 pl-3 rounded-full inline-block relative text-md font-bold text-white border-white border-2 bg-sky-800"
-                }
-              >
-                {item}
-              </div>
-            );
-          })}
         </div>
+
+        {secondDaysMounth > 0 ? (
+          <div>
+            <div className="text-sx text-gray-400 pb-2">
+              {months[now.getMonth() + 1]}
+            </div>
+            <div className="flex">
+              {daysStylesSecond.map((item) => {
+                return (
+                  <div>
+                    <div
+                      onClick={() => useDateFilterEvents(item.d)}
+                      className={
+                        store.datesFilters.includes(item.d)
+                          ? item.elemColor
+                          : item.elemColorPush
+                      }
+                    >
+                      {item.d}
+                    </div>
+                    <div
+                      onClick={() => useDateFilterEvents(item.d)}
+                      className={item.dwStyle}
+                    >
+                      {item.dayWeek}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </>
   );

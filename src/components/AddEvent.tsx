@@ -74,7 +74,7 @@ const AddEvent = observer(() => {
       )}
       <div
         ref={divRef}
-        onClick={() => divRef.current.remove()}
+        onMouseOver={() => divRef.current.remove()}
         className="animate-ping fixed z-20 top-[10%] right-[3%] sm:right-[15%] w-[50px] h-[50px] rounded-full bg-red-400 opacity-75 scale-150"
       ></div>
 
