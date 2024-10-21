@@ -30,7 +30,7 @@ class Store {
   typesAds = ["", "Дети", "Образование", "Красота", "Спорт", "Развлечения"];
   currentType = 0;
   currentCity = JSON.parse(localStorage.getItem("currentCity") || "0") || 0;
-  layerIds = "102%2C201";
+  layerIds = "102";
   currentTab = 0;
   allEvents = 0;
   allAds = 0;
@@ -54,6 +54,7 @@ class Store {
   mapView = true;
   addEventView = false;
   cardsEventsView = true;
+  spinView = "hidden";
   underlineTabStyle =
     " underline decoration-4 underline-offset-8 decoration-sky-500";
 
@@ -92,6 +93,10 @@ class Store {
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  setSpinView(spinView: string) {
+    this.spinView = spinView;
   }
 
   setDateEvent(dateEvent: number) {

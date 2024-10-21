@@ -1,12 +1,13 @@
 import { observer } from "mobx-react-lite";
 import store from "../store/store";
-import CardEvent from "./CardEvent";
+import CardEvent from "./CardEvent2";
 import AllMap from "./YMaps";
 import AddEvent from "./AddEvent";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "antd";
-import ArrowUp from "./SVG_components/ArrowUp";
-import ArrowDown from "./SVG_components/ArrowDown";
+// import { Flex, Spin } from "antd";
+// import ArrowUp from "./SVG_components/ArrowUp";
+// import ArrowDown from "./SVG_components/ArrowDown";
 import PageUp from "./SVG_components/PageUp";
 import FilterIcon from "./SVG_components/Filter";
 import EmptyCard from "./SVG_components/EmptyCard";
@@ -14,6 +15,9 @@ import SortByDate from "./SVG_components/SortByDate";
 import ShuffleByDate from "./SVG_components/SortByDateShuffle";
 // import Day from "./DayFilter";
 import Type from "./TypeFilter";
+import Spinner from "./Spinner";
+// import BackGrnd from "./SVG_components/BackGrnd";
+// import MoreInfo from "./SVG_components/MoreInfo";
 const { Search } = Input;
 
 const AllEvents = observer(() => {
@@ -34,12 +38,23 @@ const AllEvents = observer(() => {
     fetch(
       `https://gde-chto.ru/elitegis/rest/services/${
         store.cities[store.currentCity]
-      }/sights/MapServer/exts/CompositeSoe/Search?f=json&layerIds=${
-        store.layerIds
-      }&definitionQueries=%7B%22102%22%3A%22type!%3D30%22%7D&geometryToDistance=%7B%22type%22%3A%22point%22%2C%22x%22%3A9248980.746105952%2C%22y%22%3A7336891.762952331%2C%22spatialReference%22%3A%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D%7D&orderByDisplayNames=false&returnGeometries=&outCoordinateSystems=%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D&compareType=contains&onlyInCaption=false&singleText=%D0%B0&returnFields=%5B%22*%22%5D&returnLabelPoints=&returnExtents=*&returnScore=true&ignoreCase=true&language=ru`
+      }/sights/MapServer/${store.layerIds}/query?f=json`
+
+      // ${
+      //   store.cities[store.currentCity]
+      // }/sights/MapServer/exts/CompositeSoe/Search?f=json&layerIds=${
+      //   store.layerIds
+      // }&definitionQueries=%7B%22102%22%3A%22type!%3D30%22%7D&geometryToDistance=%7B%22type%22%3A%22point%22%2C%22x%22%3A9248980.746105952%2C%22y%22%3A7336891.762952331%2C%22spatialReference%22%3A%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D%7D&orderByDisplayNames=false&returnGeometries=&outCoordinateSystems=%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D&compareType=contains&onlyInCaption=false&singleText=%D0%B0&returnFields=%5B%22*%22%5D&returnLabelPoints=&returnExtents=*&returnScore=true&ignoreCase=true&language=ru`
     )
+      // fetch(
+      //   `https://gde-chto.ru/elitegis/rest/services/${
+      //     store.cities[store.currentCity]
+      //   }/sights/MapServer/exts/CompositeSoe/Search?f=json&layerIds=${
+      //     store.layerIds
+      //   }&definitionQueries=%7B%22102%22%3A%22type!%3D30%22%7D&geometryToDistance=%7B%22type%22%3A%22point%22%2C%22x%22%3A9248980.746105952%2C%22y%22%3A7336891.762952331%2C%22spatialReference%22%3A%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D%7D&orderByDisplayNames=false&returnGeometries=&outCoordinateSystems=%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D&compareType=contains&onlyInCaption=false&singleText=%D0%B0&returnFields=%5B%22*%22%5D&returnLabelPoints=&returnExtents=*&returnScore=true&ignoreCase=true&language=ru`
+      // )
       .then((response) => response.json())
-      .then((data) => setData(data.results))
+      .then((data) => setData(data.features))
       .catch((error) => console.error(error));
   };
 
@@ -48,54 +63,22 @@ const AllEvents = observer(() => {
     let events: { layerId: Number | null }[] = [];
     let ads: { layerId: Number | null }[] = [];
     data?.map((item: { layerId: Number | null }) => {
-      if (item.layerId === 102) {
+      if (store.layerIds === "102") {
         events.push(item);
       }
-      if (item.layerId === 201) {
+      if (store.layerIds === "201") {
         ads.push(item);
       }
     });
 
     setAllEvents(events);
     // console.log(events?.length, "events.length!!");
-
-    // setShownCards(events);
-    // setShownCards(events?.sort(() => Math.random() - 0.5));
-    // console.log(shownCards?.length, "shownCards.length!!");
-
-    // // if (shownCards) {
-    // //   console.log(isLoaded, "shownCards");
-    // //   setIsloaded(true);
-    // // }
-    // setIsloaded(true);
-
-    // let checkFav: any[] = [];
-    // events?.map((item: any) => {
-    //   if (store.favoriteEvents.includes(item.objectId)) {
-    //     checkFav.push(item.objectId);
-    //     localStorage.setItem("favoriteEvents", JSON.stringify(checkFav));
-    //   }
-    // });
-    // store.checkEvents();
-
-    // setFilters(false);
-    // store.setTypeFilters([0]);
-    // setResetFilters(false);
-    // store.setСurrentTab(0);
-    // store.setSorted(0);
-    // // setIsloaded(true);
-    // // store.setDatesFilters([]);
-    // // console.log(store.sourceCity, "source city!!", store.currentCity);
-    // store.setData(events.length, ads.length);
-
-    // // setShownCards(allEvents);
-    // store.setMapView(false);
   };
 
   const sortFavorites = () => {
-    let shownEvents: { objectId: string | Number | null }[] = [];
-    allEvents?.map((item: { objectId: string | Number | null }) => {
-      if (store.favoriteEvents.includes(item.objectId)) {
+    let shownEvents: any[] = [];
+    allEvents?.map((item: { attributes: { oid: Number } }) => {
+      if (store.favoriteEvents.includes(item.attributes.oid)) {
         shownEvents.push(item);
       }
     });
@@ -154,7 +137,7 @@ const AllEvents = observer(() => {
         });
         allEvents.map((item: any) => {
           // console.log(item.objectId);
-          if (resultIds.includes(item.objectId)) {
+          if (resultIds.includes(item.attributes.oid)) {
             resultCards.push(item);
           }
         });
@@ -204,15 +187,14 @@ const AllEvents = observer(() => {
   }, [data]);
 
   useEffect(() => {
+    store.setSpinView("");
     setShownCards(allEvents?.sort(() => Math.random() - 0.5));
-    // console.log(shownCards?.length, "shownCards.length!!");
-
     setIsloaded(true);
 
     let checkFav: any[] = [];
     allEvents?.map((item: any) => {
-      if (store.favoriteEvents.includes(item.objectId)) {
-        checkFav.push(item.objectId);
+      if (store.favoriteEvents.includes(item.attributes.oid)) {
+        checkFav.push(item.attributes.oid);
         localStorage.setItem("favoriteEvents", JSON.stringify(checkFav));
       }
     });
@@ -228,15 +210,19 @@ const AllEvents = observer(() => {
   }, [allEvents]);
 
   // useEffect(() => {
+  //   setShownCards(allEvents?.slice(0, 4));
+  // }, [allEvents]);
+
+  // useEffect(() => {
   //   sortEvents();
   //   store.setAllEvents(events?.length);
   // }, [events, store.allEvents, store.dataFilter]);
 
   useEffect(() => {
     // console.log(store.dataFilter);
-    let dateEvents: { objectId: string | Number | null }[] = [];
+    let dateEvents: any[] = [];
     allEvents?.map(
-      (item: { attributes: any; objectId: string | Number | null }) => {
+      (item: { attributes: { date_to: string | number | Date } }) => {
         if (store.dataFilter === new Date(item.attributes.date_to).getDate()) {
           dateEvents.push(item);
         }
@@ -266,37 +252,32 @@ const AllEvents = observer(() => {
   // }, [store.x, store.y]);
 
   useEffect(() => {
-    let typeEvents: { objectId: string | Number | null }[] = [];
-    shownCards?.map(
-      (item: { attributes: any; objectId: string | Number | null }) => {
-        if (item.attributes.type === store.currentType) {
-          typeEvents.push(item);
-        }
+    let typeEvents: { attributes: { type: number } }[] = [];
+    shownCards?.map((item: { attributes: { type: number } }) => {
+      if (item.attributes.type === store.currentType) {
+        typeEvents.push(item);
       }
-    );
+    });
     setShownCards(typeEvents);
   }, [store.currentType]);
 
   useEffect(() => {
     // console.log(store.datesFilters, "store days");
-    let cardsEvents: { attributes: any; objectId: string | Number | null }[] =
-      [];
+    let cardsEvents: { attributes: any; oid: Number | null }[] = [];
     if (store.datesFilters.length === 30) {
       store.setDatesFilters([]);
       store.setDatesFilters([store.dateEvent]);
     }
 
-    allEvents?.map(
-      (item: { attributes: any; objectId: string | Number | null }) => {
-        const dateEvent = new Date(item.attributes.date_from).getDate();
-        if (
-          !store.typesFilters.includes(item.attributes.type) &&
-          store.datesFilters.includes(dateEvent)
-        ) {
-          cardsEvents.push(item);
-        }
+    allEvents?.map((item: { attributes: any; oid: Number | null }) => {
+      const dateEvent = new Date(item.attributes.date_from).getDate();
+      if (
+        !store.typesFilters.includes(item.attributes.type) &&
+        store.datesFilters.includes(dateEvent)
+      ) {
+        cardsEvents.push(item);
       }
-    );
+    });
     setShownCards(cardsEvents);
     console.log(cardsEvents.length, "- найдено ");
   }, [store.typesFilters, store.datesFilters]);
@@ -304,9 +285,10 @@ const AllEvents = observer(() => {
   useEffect(() => {
     // console.log(shownCards?.length, "shownCards...");
     // console.log("use!");
-    if (shownCards?.length === 0) {
-      console.log("Ничего нету...");
-    }
+    // if (shownCards?.length === 239) {
+    //   setShownCards(allEvents?.slice(0, 1));
+    //   console.log("Ничего нету...");
+    // }
   }, [shownCards]);
 
   useEffect(() => {
@@ -315,6 +297,7 @@ const AllEvents = observer(() => {
 
   return (
     <>
+      <Spinner />
       <AllMap />
 
       {store.addEventView && <AddEvent />}
@@ -322,34 +305,15 @@ const AllEvents = observer(() => {
       {store.cardsEventsView && (
         <div
           ref={allEv}
-          // className={
-          //   store.mapView
-          //     ? "fixed container mx-auto sm:top-[90%] top-[100%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
-          //     : "fixed container mx-auto top-[10%] overflow-x-hidden overflow-scroll w-11/12 h-[95%]"
-          // }
           className={
             store.mapView
-              ? "fixed container mx-auto sm:top-[90%] top-[100%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
-              : "fixed container mx-auto top-[25%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+              ? "fixed container z-20 mx-auto sm:top-[90%] top-[100%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+              : "fixed container z-20 mx-auto top-[25%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
           }
         >
-          {store.mapView ? (
-            <div
-              // onMouseEnter={() =>
-              //   store.setMapView(store.mapView ? false : true)
-              // }
-              onClick={() => store.setMapView(store.mapView ? false : true)}
-            >
-              <ArrowUp />
-            </div>
-          ) : (
-            <div onClick={() => store.setMapView(store.mapView ? false : true)}>
-              <ArrowDown />
-            </div>
-          )}
           <div
             className={
-              "flex z-40 gap-4 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
+              "flex gap-4 gap-x-6 flex-wrap items-center md:justify-normal justify-center"
             }
           >
             <h1
@@ -360,6 +324,7 @@ const AllEvents = observer(() => {
                   : " cursor-pointer text-slate-600 font-bold"
               }
               onClick={() => {
+                store.setSpinView("");
                 store.setСurrentTab(0);
                 setFilters(false);
                 setResetFilters(false);
@@ -439,6 +404,7 @@ const AllEvents = observer(() => {
                 <ShuffleByDate />
               </div>
             )}
+            {/* <div className="absolute -z-10 w-full h-32 rounded-3xl bg-gray-500 drop-shadow-lg opacity-95"></div> */}
           </div>
 
           {/* {filters ? (
@@ -474,6 +440,7 @@ const AllEvents = observer(() => {
               {resetFilters && (
                 <div
                   onClick={() => {
+                    store.setSpinView("");
                     setShownCards(allEvents);
                     store.setTypeFilters([0]);
                     store.setDatesFilters([
@@ -497,34 +464,15 @@ const AllEvents = observer(() => {
           {shownCards?.length === 0 ? <EmptyCard /> : ""}
           <div className="grid items-start sm:grid-cols-3 grid-cols-1 2xl:grid-cols-4 gap-4 pt-8">
             {isLoaded ? (
-              shownCards?.map((item: { layerId: any; objectId: number }) => {
-                return <CardEvent data={item} key={item.objectId} />;
+              shownCards?.map((item: { attributes: { oid: any } }) => {
+                return <CardEvent data={item} key={item.attributes.oid} />;
               })
             ) : (
-              <img
-                className="w-6 h-6 opacity-50 animate-spin"
-                src="https://gde-chto.ru/catalog/css/images/common/loader_wait_snake_black_16x16.svg"
-                alt=""
-              />
+              <Spinner />
             )}
           </div>
 
-          <div
-            className={
-              store.mapView
-                ? "fixed container mx-auto sm:h-[20%] h-[10%] -z-10 rounded-3xl -bottom-10 -ml-4 bg-white drop-shadow-lg"
-                : "fixed container mx-auto h-[84%] -z-10 rounded-3xl -bottom-10 -ml-4 bg-white drop-shadow-lg"
-            }
-          ></div>
-
-          <div
-            onClick={() => store.setMapView(store.mapView ? false : true)}
-            className={
-              store.mapView
-                ? ""
-                : "cursor-pointer opacity-0 fixed container mx-auto h-[100%] -z-20 rounded-3xl -bottom-10 -ml-4 bg-black drop-shadow-lg"
-            }
-          ></div>
+          {/* <BackGrnd /> */}
 
           {!store.mapView && (
             <div

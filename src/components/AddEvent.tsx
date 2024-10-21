@@ -28,7 +28,7 @@ const AddEvent = observer(() => {
 
   return (
     <>
-      {!store.mapView ? (
+      {/* {!store.mapView ? (
         <div>
           <svg
             className="fixed sm:top-[84%] top-[92%] inset-x-1/2 -ml-6 opacity-50 z-20 cursor-pointer"
@@ -71,7 +71,7 @@ const AddEvent = observer(() => {
             />
           </svg>
         </div>
-      )}
+      )} */}
       <div
         ref={divRef}
         onMouseOver={() => divRef.current.remove()}
@@ -80,7 +80,7 @@ const AddEvent = observer(() => {
 
       <div
         className={
-          store.mapView
+          !store.mapView
             ? "fixed z-10 container mx-auto sm:top-[25%] top-[24%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
             : "fixed z-10 container mx-auto sm:top-[90%] top-[99%] overflow-x-hidden overflow-scroll w-11/12 h-[10%]"
         }
@@ -122,13 +122,13 @@ const AddEvent = observer(() => {
         </div>
       </div>
 
-      <div
+      {/* <div
         className={
           !store.mapView
             ? "fixed container mx-auto -z-1 sm:h-[18%] h-[10%] rounded-3xl -bottom-10 -ml-4 bg-white opacity-95 drop-shadow-lg"
             : "fixed container mx-auto -z-1 sm:h-[83%] h-[83%] rounded-3xl -bottom-10 -ml-4 bg-white opacity-95 drop-shadow-lg"
         }
-      ></div>
+      ></div> */}
       {/* <p className="cursor-pointer" onClick={() => coGis()}>
         гет-запросик
       </p> */}

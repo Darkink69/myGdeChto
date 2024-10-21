@@ -8,7 +8,7 @@ const Type = observer(() => {
   const useFilterEvents = (typeEvent: number) => {
     let currentFilters = [];
     if (store.typesFilters.length === 1) {
-      currentFilters.push(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15);
+      currentFilters.push(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 55);
     }
     currentFilters.push(...store.typesFilters);
     if (!currentFilters.includes(typeEvent)) {
@@ -163,6 +163,16 @@ const Type = observer(() => {
           }
         >
           Вечеринки
+        </p>
+        <p
+          onClick={() => useFilterEvents(55)}
+          className={
+            store.typesFilters.includes(55)
+              ? store.styleFilter + " text-[#FF6B57] border-black"
+              : store.styleFilter + " text-[#FF6B57] border-black bg-black"
+          }
+        >
+          Хэллоуин
         </p>
       </div>
     </>

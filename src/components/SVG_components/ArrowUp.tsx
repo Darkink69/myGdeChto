@@ -1,7 +1,8 @@
 export default function ArrowUp() {
   return (
     <svg
-      className="fixed sm:top-[82%] top-[92%] inset-x-1/2 -ml-6 opacity-50 z-40 cursor-pointer"
+      // className=""
+      className="fixed sm:top-[82%] top-[92%] inset-x-1/2 -ml-6 opacity-100 cursor-pointer hover:scale-105"
       width="50"
       height="50"
       viewBox="0 0 50 50"

@@ -1,7 +1,7 @@
 export default function ArrowDown() {
   return (
     <svg
-      className="fixed top-[18%] inset-x-1/2 -ml-4 opacity-50 z-40 cursor-pointer"
+      className="fixed top-[18%] inset-x-1/2 -ml-4 opacity-100 cursor-pointer hover:scale-105"
       width="50"
       height="50"
       viewBox="0 0 50 50"

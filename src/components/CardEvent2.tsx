@@ -40,8 +40,8 @@ const CardEvent = observer(({ data }: any) => {
       `https://gde-chto.ru/elitegis/rest/services/${
         store.cities[store.currentCity]
       }/sights/MapServer/exts/CompositeSoe/GetAttachments?layer=${
-        data.layerId
-      }&objectId=${data.objectId}&f=json`
+        store.layerIds
+      }&objectId=${data.attributes.oid}&f=json`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -140,7 +140,6 @@ const CardEvent = observer(({ data }: any) => {
   };
 
   const getFullCard = () => {
-    console.log(data.objectId);
     visibleEl == "hidden" ? setVisibleEl("") : setVisibleEl("hidden");
     setHyperlinks();
   };
@@ -170,7 +169,7 @@ const CardEvent = observer(({ data }: any) => {
     // store.setMapView(false);
     store.setMapView(true);
 
-    store.setCurrentObjectId(data.objectId);
+    store.setCurrentObjectId(data.attributes.oid);
     const scale = "2256";
     store.setCoords(data.attributes.geom_lat, data.attributes.geom_long, scale);
     // store.x = data.attributes.geom_lat;
@@ -184,19 +183,19 @@ const CardEvent = observer(({ data }: any) => {
   };
 
   const addFavoriteEvent = () => {
-    console.log("В избранное!", data.objectId);
+    console.log("В избранное!", data.attributes.oid);
     let favoriteEvents =
       JSON.parse(localStorage.getItem("favoriteEvents") || "[]") || [];
-    favoriteEvents.push(data.objectId);
+    favoriteEvents.push(data.attributes.oid);
     localStorage.setItem("favoriteEvents", JSON.stringify(favoriteEvents));
     store.checkEvents();
   };
 
   const removeFavoriteEvent = () => {
-    console.log(data.objectId, "REMOVE FAV!!");
+    console.log(data.attributes.oid, "REMOVE FAV!!");
 
     const filteredNumbers = store.favoriteEvents.filter(
-      (number: any) => number !== data.objectId
+      (number: any) => number !== data.attributes.oid
     );
     localStorage.setItem("favoriteEvents", JSON.stringify(filteredNumbers));
     store.checkEvents();
@@ -210,7 +209,9 @@ const CardEvent = observer(({ data }: any) => {
       imgLinksArray.push(
         `https://gde-chto.ru/elitegis/rest/services/${
           store.cities[store.currentCity]
-        }/sights/MapServer/${data.layerId}/${data.objectId}/attachments/${item}`
+        }/sights/MapServer/${store.layerIds}/${
+          data.attributes.oid
+        }/attachments/${item}`
       );
 
       // console.log(imgLinksArray);
@@ -226,7 +227,7 @@ const CardEvent = observer(({ data }: any) => {
   }, [img]);
 
   useEffect(() => {
-    if (store.favoriteEvents.includes(data.objectId)) {
+    if (store.favoriteEvents.includes(data.attributes.oid)) {
       // console.log(data.objectId, "INCLUDE!!");
       setFav(true);
     }
@@ -241,8 +242,8 @@ const CardEvent = observer(({ data }: any) => {
     <>
       <div
         className={
-          data.attributes.type_for_search === "1 Сентября"
-            ? "p-6 max-w-[400px] mx-auto bg-amber-50 rounded-xl shadow-lg"
+          data.attributes.type_for_search === "Хэллоуин"
+            ? "p-6 max-w-[400px] mx-auto bg-cover bg-[url('../src/assets/hell.jpg')] rounded-xl shadow-lg"
             : "p-6 max-w-[400px] mx-auto bg-white rounded-xl shadow-lg"
         }
       >
@@ -302,8 +303,8 @@ const CardEvent = observer(({ data }: any) => {
               img[0]
                 ? `https://gde-chto.ru/elitegis/rest/services/${
                     store.cities[store.currentCity]
-                  }/sights/MapServer/${data.layerId}/${
-                    data.objectId
+                  }/sights/MapServer/${store.layerIds}/${
+                    data.attributes.oid
                   }/attachments/${img[0]}`
                 : waitGifs[rndGif]
             }
@@ -355,8 +356,8 @@ const CardEvent = observer(({ data }: any) => {
           onClick={() => sortByType()}
         >
           #
-          {data.layerId === 201
-            ? store.typesAds[data.attributes.type]
+          {data.attributes.type_for_search === "Хэллоуин"
+            ? data.attributes.type_for_search
             : store.typesEvent[data.attributes.type]}
         </p>
 

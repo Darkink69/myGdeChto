@@ -1,7 +1,7 @@
 import store from "../store/store";
 import { observer } from "mobx-react-lite";
-import { useEffect, useRef, useState } from "react";
-// import { useEffect, useState } from "react";
+// import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 
 const Menu = observer(() => {
   const getAddEvent = () => {
@@ -15,21 +15,28 @@ const Menu = observer(() => {
   // let src = "";
 
   //
-  const xx = () => {
-    // fetch(
-    //   `https://gde-chto.ru/elitegis/rest/services/stats/statistics/MapServer/102/query?f=json&token=8f23c2b9ab6c48c98f9f9e079f47fd86&returnIdsOnly=false&returnCountOnly=false&returnGeometry=false&returnZ=false&returnM=false&where=(((client_name+is+not+null)+AND+(%22action_week_day%22+IN+(1%2C2%2C3%2C4%2C5%2C6%2C0)))+AND+(%22action_date%22%3E%3D%272024-09-30%27))&orderByFields=%22client_name%22+ASC&groupByFieldsForStatistics=client_name&outStatistics=%5B%7B%22onStatisticField%22%3A%22oid%22%2C%22statisticType%22%3A%22count%22%2C%22outStatisticFieldName%22%3A%22oid_count%22%7D%5D&language=ru`
-    // )
-    //   .then((response) => response.json())
-    //   .then((data) => console.log(data))
-    //   .catch((error) => console.error(error));
+  let access_token =
+    "vk1.a.UieeP5DkJ4abyojVpozUqXtspyHnBs5xArMUFKQ-NOm8_JF4rqfeS8uNBo5n6f34flurk4e1YOZUD1roJiBMvIcwauP9l7rK3WBbEJKMsb9u3obMmVArUYWC6vz5_nuuc_6ZCTV3ZyLA6KThabhlLYoUMgJhrDBV618SwTZ_IfdiqB1w-wylp_EIiN2u8LyNUD5xhpfQAqgF-ZsFESIQZQ";
+  let owner_id = "-214478812"; // gdechtoacadem
+  let message = `Читающая суббота\nОсвобождайте утро субботы 26 октября и приходите в 11:00 в лофт "Книжный шкаф". Энциклопедия "Мы живем во дворце Минотавра" перенесет нас на остров Крит, где мы с вами займемся расшифровкой тайных посланий древних людей. Ждем детей и родителей!\nhttps://ngonb.ru/`;
+  let attachments =
+    "https://gde-chto.ru/elitegis/rest/services/novosibirsk/sights/MapServer/102/3314/attachments/54340";
 
-    const os = navigator;
+  const xx = () => {
+    fetch(
+      `https://api.vk.com/method/wall.post?access_token=${access_token}&owner_id=${owner_id}&message=${message}&attachments=${attachments}&v=5.199`
+    )
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+
+    // const os = navigator;
 
     // const userAgent = navigator.userAgent;
-    console.log(os);
+    // console.log(os);
     // navigator.gpu.requestAdapter().then((r) => console.log(r));
 
-    console.log(navigator.language);
+    // console.log(navigator.language);
 
     // const displayMediaOptions = {
     //   video: {
@@ -126,9 +133,9 @@ const Menu = observer(() => {
     <>
       <div
         className="flex items-center xl:gap-8 gap-2 flex-col sm:pt-40 pt-28 text-sm sm:text-2xl text-white font-bold sm:p-20 p-6"
-        onClick={(e) => console.log(e, e.pageX, e.pageY, "!!")}
-        onBlur={() => console.log("blur!")}
-        onTouchStart={(e) => console.log(e, "touch!")}
+        // onClick={(e) => console.log(e, e.pageX, e.pageY, "!!")}
+        // onBlur={() => console.log("blur!")}
+        // onTouchStart={(e) => console.log(e, "touch!")}
       >
         {/* <iframe src={src} width="500px" height="300px"></iframe> */}
         {/* <p>{latitude} {longitude}</p> */}
@@ -139,15 +146,10 @@ const Menu = observer(() => {
           <button type="submit">Отправить</button>
         </form> */}
 
-        {/* <button onClick={handleClick}>{isPlaying ? "Pause" : "Play"}</button>
-        <video
-          width="250"
-          ref={ref}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-        >
+        {/* <button onClick={handleClick}>{isPlaying ? "Pause" : "Play"}</button> */}
+        {/* <video controls>
           <source
-            src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+            src="https://vthumb67.bcvcdn.mp4?t=1728973525"
             type="video/mp4"
           />
         </video> */}
@@ -166,7 +168,7 @@ const Menu = observer(() => {
             Блог
           </a>
         </p>
-        <p onClick={() => xx()}>...</p>
+        {/* <p onClick={() => xx()}>...</p> */}
       </div>
     </>
   );

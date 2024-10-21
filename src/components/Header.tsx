@@ -40,7 +40,7 @@ const Header = observer(() => {
 
   return (
     <>
-      <div className="fixed bg-cover bg-[url('../src/assets/header_bg.jpg')] z-50 sm:h-[100px] h-[60px] w-full shadow-md">
+      <div className="fixed bg-cover sm:bg-[url('../src/assets/header_bg.jpg')] bg-none z-50 sm:h-[100px] h-[60px] w-full sm:shadow-md">
         <div className="flex items-center 2xl:pl-40 pl-0">
           <svg
             className="cursor-pointer sm:mt-1 -mt-3 hover:drop-shadow-lg scale-50 md:scale-100"

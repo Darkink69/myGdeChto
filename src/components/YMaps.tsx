@@ -49,12 +49,13 @@ const AllMap = observer(() => {
 
   return (
     <>
-      <div className="container sm:pt-20 pt-10 fixed -ml-4">
+      <div className="container sm:pt-20 absolute -ml-4 sm:mt-0 -mt-4">
         {/* <input onMouseMove="this.value=event.clientX+':'+event.clientY" value="Наведи на меня мышь"> */}
         {/* <p>{window.innerWidth}</p> */}
         {/* <p>{window.innerHeight}</p> */}
         {/* <canvas width="300" height="300"></canvas> */}
         <iframe
+          // style={{ overflow: "scroll" }}
           src={store.sourceCity}
           width="100%"
           height={h}

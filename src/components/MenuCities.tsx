@@ -10,20 +10,29 @@ const MenuCities = observer(() => {
       <div className="transition-all grid grid-cols-2 sm:grid-cols-4 gap-2 sm:pt-32 pt-28 text-md sm:text-2xl text-white font-bold sm:p-20 p-10">
         <p
           className="cursor-pointer hover:text-sky-300"
-          onClick={() => store.setCurentCity(1)}
+          onClick={() => {
+            store.setSpinView("");
+            store.setCurentCity(1);
+          }}
         >
           Москва
         </p>
         <p className="opacity-40">Санкт-Петербург</p>
         <p
           className="cursor-pointer hover:text-sky-300"
-          onClick={() => store.setCurentCity(0)}
+          onClick={() => {
+            store.setSpinView("");
+            store.setCurentCity(0);
+          }}
         >
           Новосибирск
         </p>
         <p
           className="cursor-pointer hover:text-sky-300"
-          onClick={() => store.setCurentCity(2)}
+          onClick={() => {
+            store.setSpinView("");
+            store.setCurentCity(2);
+          }}
         >
           Томск
         </p>
@@ -33,7 +42,10 @@ const MenuCities = observer(() => {
         <p className="opacity-40">Нижний Новгород</p>
         <p
           className="cursor-pointer hover:text-sky-300"
-          onClick={() => store.setCurentCity(3)}
+          onClick={() => {
+            store.setSpinView("");
+            store.setCurentCity(3);
+          }}
         >
           Челябинск
         </p>
