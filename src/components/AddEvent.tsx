@@ -1,10 +1,10 @@
 // import { useEffect, useState } from "react";
 import store from "../store/store";
 import { observer } from "mobx-react-lite";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 const AddEvent = observer(() => {
-  const divRef = useRef<any>(null);
+  // const divRef = useRef<any>(null);
   // const coGis = () => {
   //   // let img =
   //   //   "https://sun4-19.userapi.com/s/v1/ig2/uSzLXYqlXGPwpQ2aqY20JTQIUksvSSrIhik-G0EmZ9TdwXgqmxB5vokxfkGAZ_eNAms-HjmNY1FtDVqMfdyyNTRc.jpg";
@@ -72,11 +72,11 @@ const AddEvent = observer(() => {
           </svg>
         </div>
       )} */}
-      <div
+      {/* <div
         ref={divRef}
         onMouseOver={() => divRef.current.remove()}
         className="animate-ping fixed z-20 top-[10%] right-[3%] sm:right-[15%] w-[50px] h-[50px] rounded-full bg-red-400 opacity-75 scale-150"
-      ></div>
+      ></div> */}
 
       <div
         className={

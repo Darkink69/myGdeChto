@@ -7,7 +7,7 @@ const MenuCities = observer(() => {
 
   return (
     <>
-      <div className="transition-all grid grid-cols-2 sm:grid-cols-4 gap-2 sm:pt-32 pt-28 text-md sm:text-2xl text-white font-bold sm:p-20 p-10">
+      <div className="transition-all grid grid-cols-2 sm:grid-cols-4 gap-2 sm:pt-32 pt-28 text-md sm:text-2xl text-[#545454] font-bold sm:p-20 p-10">
         <p
           className="cursor-pointer hover:text-sky-300"
           onClick={() => {

@@ -11,17 +11,17 @@ const App = observer(() => {
   return (
     <>
       <Header />
-      <div className="container mx-auto bg-slate-50 p-4">
+      <div className="container mx-auto p-4">
         {store.mapView ? (
           <div
-            className="absolute z-30"
+            className="animate-rotate absolute z-30"
             onClick={() => store.setMapView(store.mapView ? false : true)}
           >
             <ArrowUp />
           </div>
         ) : (
           <div
-            className="absolute z-30"
+            className="animate-rotate absolute z-30"
             onClick={() => store.setMapView(store.mapView ? false : true)}
           >
             <ArrowDown />
@@ -30,8 +30,8 @@ const App = observer(() => {
         <div
           className={
             store.mapView
-              ? "fixed z-10 container mx-auto sm:h-[20%] h-[10%] rounded-3xl -bottom-10 -ml-4 bg-white drop-shadow-lg opacity-95"
-              : "fixed z-10 h-[84%] container mx-auto rounded-3xl -bottom-10 -ml-4 bg-white drop-shadow-lg opacity-95"
+              ? "animate-down fixed z-10 container mx-auto sm:h-[20%] h-[10%] rounded-3xl -bottom-10 -ml-4 bg-white drop-shadow-lg opacity-95"
+              : "animate-up fixed z-10 h-[84%] container mx-auto rounded-3xl -bottom-10 -ml-4 bg-white drop-shadow-lg opacity-95"
           }
         ></div>
         <div

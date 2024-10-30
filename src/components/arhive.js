@@ -266,3 +266,28 @@ xmlns="http://www.w3.org/2000/svg"
         >
           All Ads
         </p> */}
+
+
+
+
+
+        // useEffect(() => {
+        //   // console.log(store.datesFilters, "store days");
+        //   let cardsEvents: { attributes: any; oid: Number | null }[] = [];
+        //   if (store.datesFilters.length === 30) {
+        //     store.setDatesFilters([]);
+        //     store.setDatesFilters([store.dateEvent]);
+        //   }
+      
+        //   allEvents?.map((item: { attributes: any; oid: Number | null }) => {
+        //     const dateEvent = new Date(item.attributes.date_from).getDate();
+        //     if (
+        //       !store.typesFilters.includes(item.attributes.type) &&
+        //       store.datesFilters.includes(dateEvent)
+        //     ) {
+        //       cardsEvents.push(item);
+        //     }
+        //   });
+        //   setShownCards(cardsEvents);
+        //   console.log(cardsEvents.length, "- найдено ");
+        // }, [store.typesFilters, store.datesFilters]);

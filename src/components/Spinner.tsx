@@ -5,8 +5,6 @@ import store from "../store/store";
 // import { useState, useEffect } from "react";
 
 const Spinner = observer(() => {
-  //   const [spinView, setSpinView] = useState("");
-
   useEffect(() => {
     setTimeout(() => {
       store.setSpinView("hidden");

@@ -39,20 +39,7 @@ const AllEvents = observer(() => {
       `https://gde-chto.ru/elitegis/rest/services/${
         store.cities[store.currentCity]
       }/sights/MapServer/${store.layerIds}/query?f=json`
-
-      // ${
-      //   store.cities[store.currentCity]
-      // }/sights/MapServer/exts/CompositeSoe/Search?f=json&layerIds=${
-      //   store.layerIds
-      // }&definitionQueries=%7B%22102%22%3A%22type!%3D30%22%7D&geometryToDistance=%7B%22type%22%3A%22point%22%2C%22x%22%3A9248980.746105952%2C%22y%22%3A7336891.762952331%2C%22spatialReference%22%3A%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D%7D&orderByDisplayNames=false&returnGeometries=&outCoordinateSystems=%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D&compareType=contains&onlyInCaption=false&singleText=%D0%B0&returnFields=%5B%22*%22%5D&returnLabelPoints=&returnExtents=*&returnScore=true&ignoreCase=true&language=ru`
     )
-      // fetch(
-      //   `https://gde-chto.ru/elitegis/rest/services/${
-      //     store.cities[store.currentCity]
-      //   }/sights/MapServer/exts/CompositeSoe/Search?f=json&layerIds=${
-      //     store.layerIds
-      //   }&definitionQueries=%7B%22102%22%3A%22type!%3D30%22%7D&geometryToDistance=%7B%22type%22%3A%22point%22%2C%22x%22%3A9248980.746105952%2C%22y%22%3A7336891.762952331%2C%22spatialReference%22%3A%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D%7D&orderByDisplayNames=false&returnGeometries=&outCoordinateSystems=%7B%22wkid%22%3A3857%2C%22wkt%22%3Anull%2C%22latestWkid%22%3A3857%7D&compareType=contains&onlyInCaption=false&singleText=%D0%B0&returnFields=%5B%22*%22%5D&returnLabelPoints=&returnExtents=*&returnScore=true&ignoreCase=true&language=ru`
-      // )
       .then((response) => response.json())
       .then((data) => setData(data.features))
       .catch((error) => console.error(error));
@@ -120,6 +107,7 @@ const AllEvents = observer(() => {
   // };
 
   const onSearch = (value: string, _e: any) => {
+    store.setSpinView("");
     console.log(value);
     let resultIds: any[] = [];
     let resultCards: any[] = [];
@@ -168,6 +156,7 @@ const AllEvents = observer(() => {
   };
 
   useEffect(() => {
+    store.setSpinView("");
     setIsloaded(false);
     setData(null);
     setShownCards(null);
@@ -178,6 +167,7 @@ const AllEvents = observer(() => {
   }, [store.currentCity]);
 
   useEffect(() => {
+    store.setSpinView("");
     // setIsloaded(false);
     // console.log(data, "DATA!!");
     if (data !== null) {
@@ -262,25 +252,17 @@ const AllEvents = observer(() => {
   }, [store.currentType]);
 
   useEffect(() => {
-    // console.log(store.datesFilters, "store days");
     let cardsEvents: { attributes: any; oid: Number | null }[] = [];
-    if (store.datesFilters.length === 30) {
-      store.setDatesFilters([]);
-      store.setDatesFilters([store.dateEvent]);
-    }
 
     allEvents?.map((item: { attributes: any; oid: Number | null }) => {
-      const dateEvent = new Date(item.attributes.date_from).getDate();
-      if (
-        !store.typesFilters.includes(item.attributes.type) &&
-        store.datesFilters.includes(dateEvent)
-      ) {
+      // const dateEvent = new Date(item.attributes.date_from).getDate();
+      if (!store.typesFilters.includes(item.attributes.type)) {
         cardsEvents.push(item);
       }
     });
     setShownCards(cardsEvents);
     console.log(cardsEvents.length, "- найдено ");
-  }, [store.typesFilters, store.datesFilters]);
+  }, [store.typesFilters]);
 
   useEffect(() => {
     // console.log(shownCards?.length, "shownCards...");
@@ -307,8 +289,8 @@ const AllEvents = observer(() => {
           ref={allEv}
           className={
             store.mapView
-              ? "fixed container z-20 mx-auto sm:top-[90%] top-[100%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
-              : "fixed container z-20 mx-auto top-[25%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+              ? "animate-down fixed container z-20 mx-auto sm:top-[90%] top-[100%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
+              : "animate-up fixed container z-20 mx-auto top-[25%] overflow-x-hidden overflow-scroll w-11/12 h-[75%]"
           }
         >
           <div
@@ -384,7 +366,10 @@ const AllEvents = observer(() => {
                 Фильтр
               </p>
             </div>
-            <div className="relative -left-3">
+            <div
+              onClick={() => filterEvents()}
+              className="relative cursor-pointer -left-3"
+            >
               <FilterIcon />
             </div>
 
